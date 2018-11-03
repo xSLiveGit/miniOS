@@ -256,7 +256,7 @@ PMode32:
     mov cr0, eax                 ; Set control register 0 to the A-register.
 
     
-    jmp Gdt64.code_descriptor:Realm64       ; Set the code segment and enter 64-bit long mode.
+    jmp FIELD_OFFSET(Gdt64, Gdt64.code_descriptor):Realm64       ; Set the code segment and enter 64-bit long mode.
 
 ; /**********************************************************************/
 ; /*                                GDT 64                              */
@@ -303,8 +303,12 @@ Gdt64:
  
 Realm64:
     break
+    break
+    break
+    break
+    break
     cli                           ; Clear the interrupt flag.
-    mov ax, Gdt64.data_descriptor            ; Set the A-register to the data descriptor.
+    mov ax, FIELD_OFFSET(Gdt64, Gdt64.data_descriptor)            ; Set the A-register to the data descriptor.
     mov ds, ax                    ; Set the data segment to the A-register.
     mov es, ax                    ; Set the extra segment to the A-register.
     mov fs, ax                    ; Set the F-segment to the A-register.
