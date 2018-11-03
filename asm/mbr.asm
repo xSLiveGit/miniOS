@@ -11,7 +11,7 @@
 ;*                               1st sector                            *
 ;***********************************************************************************************/
 BootPoint:
-    break
+
     xor 	ax, 	ax
     mov 	ds, 	ax
     mov 	es, 	ax
@@ -21,12 +21,12 @@ BootPoint:
     
     ; prepare a stack
     mov 	sp, 	BootPoint
-    
+
 ; reset the boot drive
 .Reset:
 	mov 	ah, 0					; reset floppy disk function
     int     0x13; call BIOS
-    break
+
     jc	    .Reset					; If Carry Flag (CF) is set, there was an error. Try resetting again
 
     xor	    ax, ax
@@ -35,7 +35,6 @@ BootPoint:
 
 ; start reading sectors
 .Read:
-    break
     mov	    ah, 0x02				; function 2
     mov	    al, 5					; read 2 sectors
     mov	    ch, 0					; cylinder
@@ -44,10 +43,10 @@ BootPoint:
     ; mov		dl, 0					; drive number. Drive 0 is floppy drive.
     mov     dl, dl
     int	    0x13					; call BIOS - Read the sector
-    break
+
     jc	    .Read					; Error, so try again
     
-    break
+
     jmp 0:0x7E00
 
              
