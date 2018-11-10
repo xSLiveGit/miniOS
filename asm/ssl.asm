@@ -203,6 +203,8 @@ PMode32:
     or eax, 3
     mov [PAG_PML4T], eax
 
+    mov [PAG_PML4T], eax
+
     mov eax, PAG_PDT
     or eax,3 
     mov [PAG_PDPT], eax
@@ -320,10 +322,19 @@ Realm64:
     break
     rep stosq                     ; Clear the screen.
     break
+    call TestPaginationRoutine
     break
+    mov rax, TestPaginationRoutine
+    call rax
+    break
+    add rax, 8000000000h
+    call rax
     break
     hlt   
 
+TestPaginationRoutine
+    break
+    ret
 
 
 cProgram:    
