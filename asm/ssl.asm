@@ -159,41 +159,28 @@ Gdt32:
 PMode32:
 
     break    
-    break
 	;-------------------------------;
 	;   Set registers		;
 	;-------------------------------;
-    break
-    break
-    break
-
+    
     mov eax, FIELD_OFFSET(Gdt32, Gdt32.data_descriptor)
     mov ds, ax
     mov ss, ax 
     mov es, ax 
     mov fs, ax 
     mov gs, ax 
-
-	; mov		ax, 0x10		; set data segments to data selector (0x10)
-	; mov		ds, ax
-	; mov		ss, ax
-	; mov		es, ax
-	; mov		esp, 90000h		; stack begins from 90000h
-	break
 	
     ; disable pagination
     mov eax, cr0
     and eax, 7FFFh  ; Clear the PG-bit, which is bit 31
     mov cr0, eax
 
-    break
     ; clear the memories for tables
     mov edi, PAG_PML4T      ; Set the destination index to 0x1000.
     mov cr3, edi            ; Set control register 3 to the destination index.
     xor eax, eax            ; Nullify the A-register.
     mov ecx, 4096           ; Set the C-register to 4096.
     rep stosd               ; Clear the memory.
-    break
 
     ; setup tables
     mov eax, PAG_PML4T
@@ -213,24 +200,22 @@ PMode32:
     or eax, 3
     mov [PAG_PDT], eax
 
-    break
     ; Set up indentity map - first 2 mb is identity map
     mov edi, PAG_PT
     mov ebx, 0x00000003          ; Set the B-register to 0x00000003 for access(page is present and it's writable)
     mov ecx, 512                 ; because we have 512 entries in PT
-    break
+
 .SetEntry:
     mov DWORD [edi], ebx         ; Set the uint32_t at the destination index to the B-register.
     add ebx, 0x1000              ; Add 0x1000 to the B-register.
     add edi, 8                   ; Add eight to the destination index.
     loop .SetEntry               ; Set the next entry.
     
-    break
+
     mov eax, cr4                 ; Set the A-register to control register 4.
     or eax, 1 << 5               ; Set the PAE-bit, which is the 6th bit (bit 5).
     mov cr4, eax                 ; Set control register 4 to the A-register.
 
-    break
     ;;de ce trebuie intai compatibility mode si apoi pagin/protected mode???
 
     ; enable  compatibility mode
@@ -239,24 +224,13 @@ PMode32:
     or eax, 1 << 8            ; Enable long mode (set IA32_EFER.LME bit - bit 8)
     wrmsr      
 
-    break
-    break
-    break
     lgdt [Gdt64.pointer]         ; Load the 64-bit global descriptor table.
 
-    break
-    break
-    break
-    break
-    break
-    break
-    break
     break
     ; Enable paging and protected mode
     mov eax, cr0                 ; Set the A-register to control register 0.
     or eax, (1 << 31) | (1 << 0)     ; Set the PG-bit, which is the 31nd bit, and the PM-bit, which is the 0th bit.
     mov cr0, eax                 ; Set control register 0 to the A-register.
-
     
     jmp FIELD_OFFSET(Gdt64, Gdt64.code_descriptor):Realm64       ; Set the code segment and enter 64-bit long mode.
 
@@ -305,10 +279,6 @@ Gdt64:
  
 Realm64:
     break
-    break
-    break
-    break
-    break
     cli                           ; Clear the interrupt flag.
     mov ax, FIELD_OFFSET(Gdt64, Gdt64.data_descriptor)            ; Set the A-register to the data descriptor.
     mov ds, ax                    ; Set the data segment to the A-register.
@@ -319,20 +289,21 @@ Realm64:
     mov edi, 0xB8000              ; Set the destination index to 0xB8000.
     mov rax, 0x1F201F201F201F20   ; Set the A-register to 0x1F201F201F201F20.
     mov ecx, 500                  ; Set the C-register to 500.
-    break
+   
     rep stosq                     ; Clear the screen.
+    
     break
     call TestPaginationRoutine
     break
     mov rax, TestPaginationRoutine
     call rax
+    ; break
+    ; add rax, 8000000000h
+    ; call rax
     break
-    add rax, 8000000000h
-    call rax
-    break
-    hlt   
+    jmp cProgram   
 
-TestPaginationRoutine
+TestPaginationRoutine:
     break
     ret
 
