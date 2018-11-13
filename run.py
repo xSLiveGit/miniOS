@@ -58,17 +58,26 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
             print('src: {%s} output: {%s} asmo: {%s}'%(src, output, asmo))
 
             if f.endswith('.asm'):
-                os.system('nasm -I ' + asmIncludesPath + ' -f elf64 -O0 -o ' + output + ' ' + src)
-            elif f.endswith('.c'):
-                print('[INFO] inainte de ld')
-                os.system('gcc -mabi=ms -std=c99 -ffreestanding -m64 -O0 ' + src + ' -o ' + asmo + ' -Wall -Werror -Wfatal-errors -masm=intel -I ' + headersDirPath)
+                cmd = 'nasm -f elf64 -O0 -o "' + output + '" "' + src + '"'
+                # cmd = 'nasm ' + ' -f elf64 "'  + asmIncludesPath + '" -O0 -o "' + output + '" "' + src + '"'
+                print('cmd: %s'%(cmd))
+                os.system(cmd)
 
-                os.system('as --64 ' + asmo + ' -o ' + output + ' msyntax=intel')
+            elif f.endswith('.c'):
+                print('inainte de gcc')
+                cmd = 'cc1 -mabi=ms -std=c99 -ffreestanding -O0 "' + src + '" -o "' + asmo + '" -Wall -Werror -Wfatal-errors -masm=intel -I "' + headersDirPath + '"'
+                print('cmd:%s'%(cmd))
+                os.system(cmd)
+                cmd = 'as --64 "' + asmo + '" -o "' + output + '" -msyntax=intel';            
+                print('cmd:%s pentru as'%(cmd))
+                os.system(cmd)
             else:
                 continue
-            lnk += output + ' '
-    # os.system('ld -O0 -Ttext 0x110000 -Tdata 0x125000 -Tbss 0x150000 --oformat binary -o ' + obj + ' ' + lnk + ' -m elf_x86_64')
-    os.system('ld -O0 -Tdata 0x125000 -Tbss 0x150000 --oformat binary -o ' + obj + ' ' + lnk + ' -m elf_x86_64')
+            lnk += ' "' + output + '" '
+    cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x125000 -Tbss 0x150000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
+    print('[INFO] ld cmd: %s'%(cmd))
+    os.system(cmd)
+    # os.system('ld -O0 -Tdata 0x125000 -Tbss 0x150000 --oformat binary -o "' + obj + '" "' + lnk + '" -m elf_x86_64')
 
     print('Binary fila path: %s'%(BinaryFilePath))
     with open(BinaryFilePath, 'ab') as o:
