@@ -1,6 +1,6 @@
 	.file	"kernel.c"
 	.intel_syntax noprefix
-	.comm	gEnviroment,4004,64
+	.comm	gEnviroment,4003,64
 	.text
 	.globl	main
 	.type	main, @function
@@ -27,7 +27,6 @@ main:
 	mov	WORD PTR [rbp-32], 0
 	movzx	eax, BYTE PTR [rbp-31]
 	and	eax, 15
-	or	eax, 96
 	mov	BYTE PTR [rbp-31], al
 	movzx	eax, BYTE PTR [rbp-31]
 	and	eax, -16

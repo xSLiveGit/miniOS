@@ -25,7 +25,7 @@
 #define COLOUR_WHITE  0X0F
 
 
-#define BACKGROUND_COLOUR COLOUR_BROWN
+#define BACKGROUND_COLOUR COLOUR_BLACK
 
 #pragma pack(push, 1)
 typedef struct _COLOR_ITEM
@@ -47,10 +47,13 @@ typedef struct _SCREEN_ITEM
 typedef struct _SCREEN_BUFFER
 {
     SCREEN_ITEM     Buffer[MAX_OFFSET];
-    uint16_t        NoItemsUse;
-    uint16_t        CurrentIdx;
+    uint8_t         Line;
+    uint8_t         Columns;
+    uint8_t         IdxInColumn;
 } SCREEN_BUFFER, *PSCREEN_BUFFER;
 #pragma pack(pop)
+
+uint8_t ScrGetOffset(uint8_t line, uint8_t column);
 
 void FlushScreenBufferOnScreen(
     PSCREEN_BUFFER ScreenBuffer

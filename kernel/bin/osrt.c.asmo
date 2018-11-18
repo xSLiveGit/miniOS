@@ -1,6 +1,6 @@
 	.file	"osrt.c"
 	.intel_syntax noprefix
-	.comm	gEnviroment,4004,64
+	.comm	gEnviroment,4003,64
 	.text
 	.globl	os_memset
 	.type	os_memset, @function
@@ -53,7 +53,7 @@ InitEnviroment:
 	.cfi_def_cfa_register 6
 	sub	rsp, 32
 	mov	r8d, 0
-	mov	edx, 4004
+	mov	edx, 4003
 	mov	ecx, OFFSET FLAT:gEnviroment
 	call	os_memset
 	call	ClearScreen

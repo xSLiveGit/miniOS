@@ -16,11 +16,9 @@ ClearScreen:
 	mov	WORD PTR [rbp-16], 0
 	movzx	eax, BYTE PTR [rbp-15]
 	and	eax, 15
-	or	eax, 96
 	mov	BYTE PTR [rbp-15], al
 	movzx	eax, BYTE PTR [rbp-15]
 	and	eax, -16
-	or	eax, 6
 	mov	BYTE PTR [rbp-15], al
 	mov	BYTE PTR [rbp-16], 32
 	mov	DWORD PTR [rbp-12], 0
@@ -51,10 +49,21 @@ FlushScreenBufferOnScreen:
 	.cfi_offset 6, -16
 	mov	rbp, rsp
 	.cfi_def_cfa_register 6
-	sub	rsp, 16
+	sub	rsp, 64
 	mov	QWORD PTR [rbp+16], rcx
 	mov	DWORD PTR [rbp-4], 0
 	mov	QWORD PTR [rbp-16], 753664
+	mov	ecx, 0
+	call	ClearScreen
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4001]
+	movzx	edx, al
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4000]
+	movzx	eax, al
+	mov	ecx, eax
+	call	ScrGetOffset
+	mov	BYTE PTR [rbp-17], al
 	mov	DWORD PTR [rbp-4], 0
 	jmp	.L5
 .L6:
@@ -67,9 +76,7 @@ FlushScreenBufferOnScreen:
 	add	QWORD PTR [rbp-16], 2
 	add	DWORD PTR [rbp-4], 1
 .L5:
-	mov	rax, QWORD PTR [rbp+16]
-	movzx	eax, WORD PTR [rax+4000]
-	movzx	eax, ax
+	movzx	eax, BYTE PTR [rbp-17]
 	cmp	eax, DWORD PTR [rbp-4]
 	jg	.L6
 	leave
@@ -79,10 +86,38 @@ FlushScreenBufferOnScreen:
 	.cfi_endproc
 .LFE1:
 	.size	FlushScreenBufferOnScreen, .-FlushScreenBufferOnScreen
+	.globl	ScrGetOffset
+	.type	ScrGetOffset, @function
+ScrGetOffset:
+.LFB2:
+	.cfi_startproc
+	push	rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	mov	rbp, rsp
+	.cfi_def_cfa_register 6
+	mov	eax, edx
+	mov	BYTE PTR [rbp+16], cl
+	mov	BYTE PTR [rbp+24], al
+	movzx	edx, BYTE PTR [rbp+16]
+	mov	eax, edx
+	sal	eax, 2
+	add	eax, edx
+	sal	eax, 4
+	mov	edx, eax
+	movzx	eax, BYTE PTR [rbp+24]
+	add	eax, edx
+	pop	rbp
+	.cfi_restore 6
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	ScrGetOffset, .-ScrGetOffset
 	.globl	WriteInBuffer
 	.type	WriteInBuffer, @function
 WriteInBuffer:
-.LFB2:
+.LFB3:
 	.cfi_startproc
 	push	rbp
 	.cfi_def_cfa_offset 16
@@ -95,9 +130,47 @@ WriteInBuffer:
 	mov	BYTE PTR [rbp+24], al
 	call	DebugBreak
 	mov	WORD PTR [rbp-16], 0
+	mov	DWORD PTR [rbp-4], 0
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4002]
+	movzx	eax, al
+	lea	edx, [rax+1]
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4001]
+	movzx	eax, al
+	cmp	edx, eax
+	cmovge	eax, edx
+	mov	DWORD PTR [rbp-4], eax
+	cmp	DWORD PTR [rbp-4], 79
+	jle	.L10
+	mov	eax, 0
+	jmp	.L15
+.L10:
+	cmp	BYTE PTR [rbp+24], 10
+	jne	.L12
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4000]
+	movzx	eax, al
+	add	eax, 1
+	cmp	eax, 24
+	jle	.L13
+	mov	eax, 0
+	jmp	.L15
+.L13:
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4000]
+	lea	edx, [rax+1]
+	mov	rax, QWORD PTR [rbp+16]
+	mov	BYTE PTR [rax+4000], dl
+	mov	rax, QWORD PTR [rbp+16]
+	mov	BYTE PTR [rax+4002], 0
+	mov	rax, QWORD PTR [rbp+16]
+	mov	BYTE PTR [rax+4001], 0
+	mov	eax, 1
+	jmp	.L15
+.L12:
 	movzx	eax, BYTE PTR [rbp-15]
 	and	eax, 15
-	or	eax, 96
 	mov	BYTE PTR [rbp-15], al
 	movzx	eax, BYTE PTR [rbp-15]
 	and	eax, -16
@@ -107,34 +180,49 @@ WriteInBuffer:
 	mov	BYTE PTR [rbp-16], al
 	call	DebugBreak
 	mov	rax, QWORD PTR [rbp+16]
-	movzx	eax, WORD PTR [rax+4002]
-	movzx	edx, ax
+	movzx	eax, BYTE PTR [rax+4002]
+	movzx	edx, al
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4000]
+	movzx	eax, al
+	mov	ecx, eax
+	call	ScrGetOffset
+	mov	BYTE PTR [rbp-5], al
+	movzx	edx, BYTE PTR [rbp-5]
 	mov	rax, QWORD PTR [rbp+16]
 	movsx	rdx, edx
 	movzx	ecx, WORD PTR [rbp-16]
 	mov	WORD PTR [rax+rdx*2], cx
 	mov	rax, QWORD PTR [rbp+16]
-	movzx	eax, WORD PTR [rax+4002]
+	movzx	eax, BYTE PTR [rax+4002]
 	lea	edx, [rax+1]
 	mov	rax, QWORD PTR [rbp+16]
-	mov	WORD PTR [rax+4002], dx
+	mov	BYTE PTR [rax+4002], dl
 	mov	rax, QWORD PTR [rbp+16]
-	movzx	eax, WORD PTR [rax+4000]
+	movzx	edx, BYTE PTR [rax+4002]
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4001]
+	cmp	dl, al
+	jb	.L14
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, BYTE PTR [rax+4001]
 	lea	edx, [rax+1]
 	mov	rax, QWORD PTR [rbp+16]
-	mov	WORD PTR [rax+4000], dx
+	mov	BYTE PTR [rax+4001], dl
+.L14:
 	mov	eax, 1
+.L15:
 	leave
 	.cfi_restore 6
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE2:
+.LFE3:
 	.size	WriteInBuffer, .-WriteInBuffer
 	.globl	WriteOnScreen
 	.type	WriteOnScreen, @function
 WriteOnScreen:
-.LFB3:
+.LFB4:
 	.cfi_startproc
 	push	rbp
 	.cfi_def_cfa_offset 16
@@ -156,6 +244,6 @@ WriteOnScreen:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE3:
+.LFE4:
 	.size	WriteOnScreen, .-WriteOnScreen
 	.ident	"GCC: (GNU) 4.9.0 20140309 (experimental)"

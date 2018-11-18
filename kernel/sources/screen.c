@@ -24,13 +24,19 @@ void FlushScreenBufferOnScreen(
     int i = 0;
     // volatile SCREEN_ITEM* video = (volatile char*)0xB8000;
     SCREEN_ITEM* video = (PSCREEN_ITEM) 0xB8000;
-    // ClearScreen(BACKGROUND_COLOUR);
+    ClearScreen(BACKGROUND_COLOUR);
+    uint8_t screenOffset = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->Columns);
 
-    for(i=0; i < ScreenBuffer->NoItemsUse; i++)
+    for(i=0; i < screenOffset; i++)
     {
         *video = ScreenBuffer->Buffer[i];
         video++;
     }
+}
+
+uint8_t ScrGetOffset(uint8_t line, uint8_t column)
+{
+    return line * MAX_COLUMNS + column;
 }
 
 bool WriteInBuffer(
@@ -41,26 +47,38 @@ bool WriteInBuffer(
     DebugBreak();
 
     SCREEN_ITEM item = {0};
-    // int maxNumber = 0;
+    int maxNumber = 0;
 
-    // maxNumber = ScreenBuffer->NoItemsUse > ScreenBuffer->CurrentIdx + 1
-    //     ? ScreenBuffer->NoItemsUse
-    //     : ScreenBuffer->CurrentIdx + 1;
+    maxNumber = ScreenBuffer->Columns > ScreenBuffer->IdxInColumn + 1
+        ? ScreenBuffer->Columns
+        : ScreenBuffer->IdxInColumn + 1;
 
-    // if (maxNumber >= MAX_OFFSET)
-    //     return false; //here i can delete 1st line
+    if (maxNumber >= MAX_COLUMNS)
+        return false; //here i can delete 1st line
+
+    if(Char == '\n')
+    {
+        if(ScreenBuffer->Line + 1 >= MAX_LINES)
+            return false;
+
+        ScreenBuffer->Line++;
+        ScreenBuffer->IdxInColumn = 0;
+        ScreenBuffer->Columns = 0;
+        return true;
+    }
 
     item.Color.BackgroundColour = BACKGROUND_COLOUR;
     item.Color.ForegoundColour = COLOUR_GREEN;
     item.Character = Char;
 
     DebugBreak();
-    ScreenBuffer->Buffer[ScreenBuffer->CurrentIdx] = item;
-    ScreenBuffer->CurrentIdx+=1;
-    ScreenBuffer->NoItemsUse+=1;//temp to test
+    uint8_t screenOffset = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->IdxInColumn);
+    ScreenBuffer->Buffer[screenOffset] = item;
+    ScreenBuffer->IdxInColumn+=1;
+    // ScreenBuffer->NoItemsUse+=1;//temp to test
 
-    // if(ScreenBuffer->CurrentIdx >= ScreenBuffer->NoItemsUse)
-    //     ScreenBuffer->NoItemsUse++;
+    if(ScreenBuffer->IdxInColumn >= ScreenBuffer->Columns)
+        ScreenBuffer->Columns++;
 
     return true;
 }
