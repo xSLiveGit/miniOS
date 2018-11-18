@@ -39,9 +39,10 @@ int main(void)
     char customStr[] = "*Acesta este stringul custom*";
     os_printf(format, customStr, 245);
     DebugBreak();
-    ScrRemoveFirstLine(&gEnviroment.ScreenBuffer);
+    // ScrRemoveFirstLine(&gEnviroment.ScreenBuffer);
     DebugBreak();
     os_printf(a_cr);
+    PrvScrMoveLine(1,0,&gEnviroment.ScreenBuffer);
     os_printf(a_cr);
     os_printf(a_cr);
     os_printf(a_cr);
@@ -63,6 +64,7 @@ int main(void)
     // os_printf(tst_validation);
     // PrvPrintString(tst_validation);
     // stringSize = os_strlen(tst_printf_done);
+    
     // for(int i=0; i < stringSize; i++)
     // {
     //     ScrWriteOnScreen(&gEnviroment.ScreenBuffer, tst_printf_done[i]);

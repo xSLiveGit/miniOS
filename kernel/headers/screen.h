@@ -72,7 +72,15 @@ void ScrWriteOnScreen(
     char            Char
 );
 
-void ScrRemoveFirstLine(PSCREEN_BUFFER ScreenBuffer);
+void PrvScrMoveLine(
+    uint16_t        SourceLine,
+    uint16_t        DestionationLine,
+    PSCREEN_BUFFER  ScreenBuffer
+);
+
+void ScrRemoveFirstLine(
+    PSCREEN_BUFFER ScreenBuffer
+);
 
 
 

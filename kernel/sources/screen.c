@@ -101,6 +101,29 @@ void ScrWriteOnScreen(
     ScrFlushScreenBufferOnScreen(ScreenBuffer);
 }
 
+
+void PrvScrMoveLine(
+    uint16_t        SourceLine,
+    uint16_t        DestionationLine,
+    PSCREEN_BUFFER  ScreenBuffer
+)
+{
+    if(SourceLine == DestionationLine)
+        return;
+
+    if(SourceLine >= MAX_LINES || DestionationLine >= MAX_LINES)
+        return;
+
+    PSCREEN_ITEM source = &(ScreenBuffer->Buffer[SourceLine]);
+    PSCREEN_ITEM destionation = &(ScreenBuffer->Buffer[DestionationLine]);
+    for(int i=0 ;i<MAX_COLUMNS; i++)
+    {
+        *destionation = *source;
+        destionation++;
+        source++;
+    }
+}
+
 void ScrRemoveFirstLine(PSCREEN_BUFFER ScreenBuffer)
 {
     // uint16_t totalNumbersOfMovedItems = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->Columns);
