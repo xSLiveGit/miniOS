@@ -158,7 +158,7 @@ Gdt32:
 [bits 32]
 PMode32:
 
-    break    
+    ; break    
 	;-------------------------------;
 	;   Set registers		;
 	;-------------------------------;
@@ -182,20 +182,21 @@ PMode32:
     mov ecx, 4096           ; Set the C-register to 4096.
     rep stosd               ; Clear the memory.
 
-    ; setup tables
+    ; setup tables 
     mov eax, PAG_PML4T
 	mov cr3, eax            ; Set CR3 to point to PML4T address
 
+    ; PML4T[0] = PDT
     mov eax, PAG_PDPT
     or eax, 3
     mov [PAG_PML4T], eax
 
-    mov [PAG_PML4T], eax
-
+    ; PAG_PDPT[0] = PAG_PDT
     mov eax, PAG_PDT
     or eax,3 
     mov [PAG_PDPT], eax
 
+    ; PAG_PDT[0] = PAG_PT
     mov eax, PAG_PT
     or eax, 3
     mov [PAG_PDT], eax
@@ -204,6 +205,12 @@ PMode32:
     mov edi, PAG_PT
     mov ebx, 0x00000003          ; Set the B-register to 0x00000003 for access(page is present and it's writable)
     mov ecx, 512                 ; because we have 512 entries in PT
+
+    ; PDPT[1] = PDT 
+	mov dword [PAG_PDPT + 8], PAG_PDT | 011b  ; user mode / R-W / PDPT present
+
+    ; PML4T[1] = PDPT - so 8000000000h memory points here too (512 gb)
+    mov dword [PAG_PML4T + 8],  PAG_PDPT | 011b ; user mode / R-W / PDPT present
 
 .SetEntry:
     mov DWORD [edi], ebx         ; Set the uint32_t at the destination index to the B-register.
@@ -226,7 +233,7 @@ PMode32:
 
     lgdt [Gdt64.pointer]         ; Load the 64-bit global descriptor table.
 
-    break
+    ; break
     ; Enable paging and protected mode
     mov eax, cr0                 ; Set the A-register to control register 0.
     or eax, (1 << 31) | (1 << 0)     ; Set the PG-bit, which is the 31nd bit, and the PM-bit, which is the 0th bit.
@@ -278,7 +285,7 @@ Gdt64:
 [BITS 64]
  
 Realm64:
-    break
+    ; break
     cli                           ; Clear the interrupt flag.
     mov ax, FIELD_OFFSET(Gdt64, Gdt64.data_descriptor)            ; Set the A-register to the data descriptor.
     mov ds, ax                    ; Set the data segment to the A-register.
@@ -292,15 +299,15 @@ Realm64:
    
     rep stosq                     ; Clear the screen.
     
-    break
+   ; break
     call TestPaginationRoutine
-    break
+    ; break
     mov rax, TestPaginationRoutine
     call rax
-    ; break
-    ; add rax, 8000000000h
-    ; call rax
     break
+    add rax, 40000000h
+    call rax
+    ; break
     jmp cProgram   
 
 TestPaginationRoutine:
