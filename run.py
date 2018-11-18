@@ -33,7 +33,7 @@ def AddAsmInBinaryFile(AsmFile, BinaryFilePath, Root, BinaryStream):
     outputFile = path + '.obj'
     CreateFile(outputFile)
     cmd = 'nasm -o "%s" -fbin "%s"'%(outputFile, path)
-    print('CDM IS: [' + cmd + ']')
+    # print('CDM IS: [' + cmd + ']')
     os.system(cmd)
 
     with open(str(outputFile), 'rb') as inputStream:
@@ -55,27 +55,27 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
             src     = os.path.join(root, f)
             output  = os.path.join(binaryDirPath, f + '.obj')
             asmo    = os.path.join(binaryDirPath, f + '.asmo')
-            print('src: {%s} output: {%s} asmo: {%s}'%(src, output, asmo))
+            # print('src: {%s} output: {%s} asmo: {%s}'%(src, output, asmo))
 
             if f.endswith('.asm'):
                 cmd = 'nasm -f elf64 -O0 -o "' + output + '" "' + src + '"'
                 # cmd = 'nasm ' + ' -f elf64 "'  + asmIncludesPath + '" -O0 -o "' + output + '" "' + src + '"'
-                print('cmd: %s'%(cmd))
+                # print('cmd: %s'%(cmd))
                 os.system(cmd)
 
             elif f.endswith('.c'):
-                print('inainte de gcc')
+                # print('inainte de gcc')
                 cmd = 'cc1 -mabi=ms -std=c99 -ffreestanding -O0 "' + src + '" -o "' + asmo + '" -Wall -Werror -Wfatal-errors -masm=intel -I "' + headersDirPath + '"'
-                print('cmd:%s'%(cmd))
+                # print('cmd:%s'%(cmd))
                 os.system(cmd)
                 cmd = 'as --64 "' + asmo + '" -o "' + output + '" -msyntax=intel';            
-                print('cmd:%s pentru as'%(cmd))
+                # print('cmd:%s pentru as'%(cmd))
                 os.system(cmd)
             else:
                 continue
             lnk += ' "' + output + '" '
     cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x125000 -Tbss 0x150000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
-    print('[INFO] ld cmd: %s'%(cmd))
+    # print('[INFO] ld cmd: %s'%(cmd))
     os.system(cmd)
     # os.system('ld -O0 -Tdata 0x125000 -Tbss 0x150000 --oformat binary -o "' + obj + '" "' + lnk + '" -m elf_x86_64')
 
@@ -92,7 +92,7 @@ def BuildBinFromAsm(AsmDirectory, BinaryFilePath):
 
 def Run():
     cmd = 'bochsdbg.exe -q -f "' + PATH_CFG + '"'
-    print(cmd)
+    # print(cmd)
     os.system(cmd)
 
 if __name__ == "__main__":

@@ -1,0 +1,3 @@
+	.file	"string.c"
+	.intel_syntax noprefix
+	.ident	"GCC: (GNU) 4.9.0 20140309 (experimental)"

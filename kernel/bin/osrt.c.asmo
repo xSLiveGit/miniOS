@@ -1,0 +1,68 @@
+	.file	"osrt.c"
+	.intel_syntax noprefix
+	.comm	gEnviroment,4004,64
+	.text
+	.globl	os_memset
+	.type	os_memset, @function
+os_memset:
+.LFB0:
+	.cfi_startproc
+	push	rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	mov	rbp, rsp
+	.cfi_def_cfa_register 6
+	sub	rsp, 16
+	mov	QWORD PTR [rbp+16], rcx
+	mov	DWORD PTR [rbp+24], edx
+	mov	eax, r8d
+	mov	BYTE PTR [rbp+32], al
+	mov	rax, QWORD PTR [rbp+16]
+	mov	QWORD PTR [rbp-8], rax
+	mov	edx, DWORD PTR [rbp+24]
+	mov	rax, QWORD PTR [rbp-8]
+	add	rax, rdx
+	mov	QWORD PTR [rbp-16], rax
+	jmp	.L2
+.L3:
+	mov	rax, QWORD PTR [rbp-8]
+	lea	rdx, [rax+1]
+	mov	QWORD PTR [rbp-8], rdx
+	movzx	edx, BYTE PTR [rbp+32]
+	mov	BYTE PTR [rax], dl
+.L2:
+	mov	rax, QWORD PTR [rbp-8]
+	cmp	rax, QWORD PTR [rbp-16]
+	jne	.L3
+	leave
+	.cfi_restore 6
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	os_memset, .-os_memset
+	.globl	InitEnviroment
+	.type	InitEnviroment, @function
+InitEnviroment:
+.LFB1:
+	.cfi_startproc
+	push	rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	mov	rbp, rsp
+	.cfi_def_cfa_register 6
+	sub	rsp, 32
+	mov	r8d, 0
+	mov	edx, 4004
+	mov	ecx, OFFSET FLAT:gEnviroment
+	call	os_memset
+	call	ClearScreen
+	mov	eax, 1
+	leave
+	.cfi_restore 6
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	InitEnviroment, .-InitEnviroment
+	.ident	"GCC: (GNU) 4.9.0 20140309 (experimental)"

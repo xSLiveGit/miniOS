@@ -1,0 +1,161 @@
+	.file	"screen.c"
+	.intel_syntax noprefix
+	.text
+	.globl	ClearScreen
+	.type	ClearScreen, @function
+ClearScreen:
+.LFB0:
+	.cfi_startproc
+	push	rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	mov	rbp, rsp
+	.cfi_def_cfa_register 6
+	sub	rsp, 16
+	mov	QWORD PTR [rbp-8], 753664
+	mov	WORD PTR [rbp-16], 0
+	movzx	eax, BYTE PTR [rbp-15]
+	and	eax, 15
+	or	eax, 96
+	mov	BYTE PTR [rbp-15], al
+	movzx	eax, BYTE PTR [rbp-15]
+	and	eax, -16
+	or	eax, 6
+	mov	BYTE PTR [rbp-15], al
+	mov	BYTE PTR [rbp-16], 32
+	mov	DWORD PTR [rbp-12], 0
+	jmp	.L2
+.L3:
+	mov	rax, QWORD PTR [rbp-8]
+	movzx	edx, WORD PTR [rbp-16]
+	mov	WORD PTR [rax], dx
+	add	QWORD PTR [rbp-8], 2
+	add	DWORD PTR [rbp-12], 1
+.L2:
+	cmp	DWORD PTR [rbp-12], 1999
+	jle	.L3
+	leave
+	.cfi_restore 6
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	ClearScreen, .-ClearScreen
+	.globl	FlushScreenBufferOnScreen
+	.type	FlushScreenBufferOnScreen, @function
+FlushScreenBufferOnScreen:
+.LFB1:
+	.cfi_startproc
+	push	rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	mov	rbp, rsp
+	.cfi_def_cfa_register 6
+	sub	rsp, 16
+	mov	QWORD PTR [rbp+16], rcx
+	mov	DWORD PTR [rbp-4], 0
+	mov	QWORD PTR [rbp-16], 753664
+	mov	DWORD PTR [rbp-4], 0
+	jmp	.L5
+.L6:
+	mov	rax, QWORD PTR [rbp-16]
+	mov	rdx, QWORD PTR [rbp+16]
+	mov	ecx, DWORD PTR [rbp-4]
+	movsx	rcx, ecx
+	movzx	edx, WORD PTR [rdx+rcx*2]
+	mov	WORD PTR [rax], dx
+	add	QWORD PTR [rbp-16], 2
+	add	DWORD PTR [rbp-4], 1
+.L5:
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, WORD PTR [rax+4000]
+	movzx	eax, ax
+	cmp	eax, DWORD PTR [rbp-4]
+	jg	.L6
+	leave
+	.cfi_restore 6
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	FlushScreenBufferOnScreen, .-FlushScreenBufferOnScreen
+	.globl	WriteInBuffer
+	.type	WriteInBuffer, @function
+WriteInBuffer:
+.LFB2:
+	.cfi_startproc
+	push	rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	mov	rbp, rsp
+	.cfi_def_cfa_register 6
+	sub	rsp, 48
+	mov	QWORD PTR [rbp+16], rcx
+	mov	eax, edx
+	mov	BYTE PTR [rbp+24], al
+	call	DebugBreak
+	mov	WORD PTR [rbp-16], 0
+	movzx	eax, BYTE PTR [rbp-15]
+	and	eax, 15
+	or	eax, 96
+	mov	BYTE PTR [rbp-15], al
+	movzx	eax, BYTE PTR [rbp-15]
+	and	eax, -16
+	or	eax, 2
+	mov	BYTE PTR [rbp-15], al
+	movzx	eax, BYTE PTR [rbp+24]
+	mov	BYTE PTR [rbp-16], al
+	call	DebugBreak
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, WORD PTR [rax+4002]
+	movzx	edx, ax
+	mov	rax, QWORD PTR [rbp+16]
+	movsx	rdx, edx
+	movzx	ecx, WORD PTR [rbp-16]
+	mov	WORD PTR [rax+rdx*2], cx
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, WORD PTR [rax+4002]
+	lea	edx, [rax+1]
+	mov	rax, QWORD PTR [rbp+16]
+	mov	WORD PTR [rax+4002], dx
+	mov	rax, QWORD PTR [rbp+16]
+	movzx	eax, WORD PTR [rax+4000]
+	lea	edx, [rax+1]
+	mov	rax, QWORD PTR [rbp+16]
+	mov	WORD PTR [rax+4000], dx
+	mov	eax, 1
+	leave
+	.cfi_restore 6
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	WriteInBuffer, .-WriteInBuffer
+	.globl	WriteOnScreen
+	.type	WriteOnScreen, @function
+WriteOnScreen:
+.LFB3:
+	.cfi_startproc
+	push	rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	mov	rbp, rsp
+	.cfi_def_cfa_register 6
+	sub	rsp, 32
+	mov	QWORD PTR [rbp+16], rcx
+	mov	eax, edx
+	mov	BYTE PTR [rbp+24], al
+	movsx	eax, BYTE PTR [rbp+24]
+	mov	edx, eax
+	mov	rcx, QWORD PTR [rbp+16]
+	call	WriteInBuffer
+	mov	rcx, QWORD PTR [rbp+16]
+	call	FlushScreenBufferOnScreen
+	leave
+	.cfi_restore 6
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE3:
+	.size	WriteOnScreen, .-WriteOnScreen
+	.ident	"GCC: (GNU) 4.9.0 20140309 (experimental)"

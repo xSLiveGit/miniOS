@@ -3,15 +3,20 @@
 
 #include "screen.h"
 
+#define MAX(a,b) (a) > (b) ? (a) : (b)
+#define MIN(a,b) (a) < (b) ? (a) : (b)
+
 #pragma pack(push, 1)
 typedef struct _GLOBALS
 {
     SCREEN_BUFFER   ScreenBuffer;
-    
 } GLOBALS, *PGLOBALS;
 #pragma pack(pop)
 
-extern GLOBALS gEnviroment;
+bool InitEnviroment();//trus means success
+void os_memset(void* Destionation, size_t Size, uint8_t Byte);
+
+GLOBALS gEnviroment;
 
 
 #endif //!_OSRT_H_

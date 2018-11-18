@@ -25,6 +25,14 @@ typedef uint32_t 	wchar_t;
 typedef uint32_t 	size_t;
 typedef uint32_t 	addr_t;
 typedef int32_t 	pid_t;
+typedef unsigned char bool;
 
+#ifndef true
+#define true 1
+#endif //!true
+
+#ifndef false
+#define false 0
+#endif //!false
 
 #endif //!_TYPES_H_

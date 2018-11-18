@@ -1,5 +1,6 @@
 	.file	"kernel.c"
 	.intel_syntax noprefix
+	.comm	gEnviroment,4004,64
 	.text
 	.globl	main
 	.type	main, @function
@@ -11,24 +12,98 @@ main:
 	.cfi_offset 6, -16
 	mov	rbp, rsp
 	.cfi_def_cfa_register 6
-	sub	rsp, 48
-	call	DebugBreak
+	sub	rsp, 96
 	mov	DWORD PTR [rbp-4], 1
 	add	DWORD PTR [rbp-4], 1
+	call	InitEnviroment
+	test	al, al
+	jne	.L2
+	call	DebugBreak
+	mov	eax, -1
+	jmp	.L10
+.L2:
+	call	ClearScreen
+	mov	QWORD PTR [rbp-24], 753664
+	mov	WORD PTR [rbp-32], 0
+	movzx	eax, BYTE PTR [rbp-31]
+	and	eax, 15
+	or	eax, 96
+	mov	BYTE PTR [rbp-31], al
+	movzx	eax, BYTE PTR [rbp-31]
+	and	eax, -16
+	or	eax, 2
+	mov	BYTE PTR [rbp-31], al
+	mov	BYTE PTR [rbp-32], 97
+	mov	rax, QWORD PTR [rbp-24]
+	movzx	edx, WORD PTR [rbp-32]
+	mov	WORD PTR [rax], dx
+	call	DebugBreak
+	movabs	rax, 2334397743342120545
+	mov	QWORD PTR [rbp-48], rax
+	mov	DWORD PTR [rbp-40], 1701995885
+	mov	BYTE PTR [rbp-36], 0
+	movabs	rax, 7935469478591930465
+	mov	QWORD PTR [rbp-64], rax
+	mov	WORD PTR [rbp-56], 108
+	lea	rax, [rbp-48]
+	mov	rcx, rax
+	call	os_strlen
+	mov	DWORD PTR [rbp-28], eax
 	call	DebugBreak
 	mov	DWORD PTR [rbp-8], 0
-	jmp	.L2
-.L3:
-	add	DWORD PTR [rbp-4], 1
+	jmp	.L4
+.L5:
+	mov	eax, DWORD PTR [rbp-8]
+	cdqe
+	movzx	eax, BYTE PTR [rbp-48+rax]
+	movsx	eax, al
+	mov	edx, eax
+	mov	ecx, OFFSET FLAT:gEnviroment
+	call	WriteOnScreen
+	call	DebugBreak
 	add	DWORD PTR [rbp-8], 1
-.L2:
-	cmp	DWORD PTR [rbp-8], 9
-	jle	.L3
+.L4:
+	mov	eax, DWORD PTR [rbp-8]
+	cmp	eax, DWORD PTR [rbp-28]
+	jl	.L5
+	mov	edx, 10
+	mov	ecx, OFFSET FLAT:gEnviroment
+	call	WriteOnScreen
+	call	DebugBreak
+	mov	DWORD PTR [rbp-28], 9
+	mov	DWORD PTR [rbp-12], 0
+	jmp	.L6
+.L7:
+	mov	eax, DWORD PTR [rbp-12]
+	cdqe
+	movzx	eax, BYTE PTR [rbp-64+rax]
+	movsx	eax, al
+	mov	edx, eax
+	mov	ecx, OFFSET FLAT:gEnviroment
+	call	WriteOnScreen
+	add	DWORD PTR [rbp-12], 1
+.L6:
+	mov	eax, DWORD PTR [rbp-12]
+	cmp	eax, DWORD PTR [rbp-28]
+	jl	.L7
+	mov	edx, 10
+	mov	ecx, OFFSET FLAT:gEnviroment
+	call	WriteOnScreen
+	call	DebugBreak
+	mov	DWORD PTR [rbp-16], 0
+	jmp	.L8
+.L9:
+	add	DWORD PTR [rbp-4], 1
+	add	DWORD PTR [rbp-16], 1
+.L8:
+	cmp	DWORD PTR [rbp-16], 9
+	jle	.L9
 	add	DWORD PTR [rbp-4], 2
 	add	DWORD PTR [rbp-4], 2
 	add	DWORD PTR [rbp-4], 2
 	call	DebugBreak
 	mov	eax, 0
+.L10:
 	leave
 	.cfi_restore 6
 	.cfi_def_cfa 7, 8
