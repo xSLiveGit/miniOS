@@ -47,29 +47,33 @@ typedef struct _SCREEN_ITEM
 typedef struct _SCREEN_BUFFER
 {
     SCREEN_ITEM     Buffer[MAX_OFFSET];
-    uint8_t         Line;
-    uint8_t         Columns;
-    uint8_t         IdxInColumn;
+    uint16_t         Line;
+    uint16_t         Columns;
+    uint16_t         IdxInColumn;
 } SCREEN_BUFFER, *PSCREEN_BUFFER;
 #pragma pack(pop)
 
-uint8_t ScrGetOffset(uint8_t line, uint8_t column);
+uint16_t ScrGetOffset(uint16_t line, uint16_t column);
 
-void FlushScreenBufferOnScreen(
+void ScrFlushScreenBufferOnScreen(
     PSCREEN_BUFFER ScreenBuffer
 );
 
-void ClearScreen();
+void ScrClearScreen();
 
 //reuturn true if write smth
-bool WriteInBuffer(
+bool ScrWriteInBuffer(
     PSCREEN_BUFFER  ScreenBuffer,
     char            Char
 );
 
-void WriteOnScreen(
+void ScrWriteOnScreen(
     PSCREEN_BUFFER  ScreenBuffer,
     char            Char
 );
+
+void ScrRemoveFirstLine(PSCREEN_BUFFER ScreenBuffer);
+
+
 
 #endif //_SCREEN_H_

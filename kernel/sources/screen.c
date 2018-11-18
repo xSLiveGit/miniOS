@@ -1,65 +1,76 @@
 #include "screen.h"
 #include "asm_def.h"
 
-void ClearScreen()
+void ScrClearScreen()
 {
-    PSCREEN_ITEM video = ( SCREEN_ITEM*)0xB8000;
+    PSCREEN_ITEM video = (SCREEN_ITEM *)0xB8000;
     SCREEN_ITEM item = {0};
 
     item.Color.BackgroundColour = BACKGROUND_COLOUR;
     item.Color.ForegoundColour = BACKGROUND_COLOUR;
     item.Character = ' ';
 
-    for(int i=0; i<MAX_OFFSET; i++)
+    for (int i = 0; i < MAX_OFFSET; i++)
     {
-        *video= item;
+        *video = item;
         video++;
     }
 }
 
-void FlushScreenBufferOnScreen(
-    PSCREEN_BUFFER ScreenBuffer
-)
+void ScrFlushScreenBufferOnScreen(
+    PSCREEN_BUFFER ScreenBuffer)
 {
     int i = 0;
-    // volatile SCREEN_ITEM* video = (volatile char*)0xB8000;
-    SCREEN_ITEM* video = (PSCREEN_ITEM) 0xB8000;
-    ClearScreen(BACKGROUND_COLOUR);
-    uint8_t screenOffset = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->Columns);
+    SCREEN_ITEM *video = (PSCREEN_ITEM)0xB8000;
 
-    for(i=0; i < screenOffset; i++)
+    if (ScreenBuffer->Columns == 0)
+        return;
+
+    ScrClearScreen(BACKGROUND_COLOUR);
+
+    uint16_t offset = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->Columns);
+    for (i = 0; i < offset; i++)
     {
         *video = ScreenBuffer->Buffer[i];
         video++;
     }
 }
 
-uint8_t ScrGetOffset(uint8_t line, uint8_t column)
+uint16_t ScrGetOffset(
+    uint16_t Line, 
+    uint16_t Column
+    )
 {
-    return line * MAX_COLUMNS + column;
+    return Line * MAX_COLUMNS + Column;
 }
 
-bool WriteInBuffer(
+bool ScrWriteInBuffer(
     PSCREEN_BUFFER  ScreenBuffer,
     char            Char
 )
 {
-    DebugBreak();
-
     SCREEN_ITEM item = {0};
     int maxNumber = 0;
 
     maxNumber = ScreenBuffer->Columns > ScreenBuffer->IdxInColumn + 1
-        ? ScreenBuffer->Columns
-        : ScreenBuffer->IdxInColumn + 1;
+                    ? ScreenBuffer->Columns
+                    : ScreenBuffer->IdxInColumn + 1;
 
-    if (maxNumber >= MAX_COLUMNS)
-        return false; //here i can delete 1st line
-
-    if(Char == '\n')
+    if (maxNumber >= MAX_COLUMNS && Char != '\n') //generate force nl
     {
-        if(ScreenBuffer->Line + 1 >= MAX_LINES)
-            return false;
+        ScrWriteInBuffer(ScreenBuffer, '\n');
+    }
+
+    if (ScreenBuffer->Line >= MAX_LINES)
+    {
+        ScrRemoveFirstLine(ScreenBuffer);
+    }
+
+    if (Char == '\n')
+    {
+        DebugBreak();
+        if (ScreenBuffer->Line + 1 >= MAX_LINES)
+            ScrRemoveFirstLine(ScreenBuffer);
 
         ScreenBuffer->Line++;
         ScreenBuffer->IdxInColumn = 0;
@@ -71,24 +82,34 @@ bool WriteInBuffer(
     item.Color.ForegoundColour = COLOUR_GREEN;
     item.Character = Char;
 
-    DebugBreak();
-    uint8_t screenOffset = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->IdxInColumn);
+    uint16_t screenOffset = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->IdxInColumn);
     ScreenBuffer->Buffer[screenOffset] = item;
-    ScreenBuffer->IdxInColumn+=1;
-    // ScreenBuffer->NoItemsUse+=1;//temp to test
+    ScreenBuffer->IdxInColumn += 1;
 
-    if(ScreenBuffer->IdxInColumn >= ScreenBuffer->Columns)
+    if (ScreenBuffer->IdxInColumn >= ScreenBuffer->Columns)
         ScreenBuffer->Columns++;
 
     return true;
 }
 
-void WriteOnScreen(
-    PSCREEN_BUFFER  ScreenBuffer,
-    char            Char
+void ScrWriteOnScreen(
+    PSCREEN_BUFFER  ScreenBuffer
+    , char          Char
 )
 {
-    // ClearScreen();
-    WriteInBuffer(ScreenBuffer, Char);
-    FlushScreenBufferOnScreen(ScreenBuffer);
+    ScrWriteInBuffer(ScreenBuffer, Char);
+    ScrFlushScreenBufferOnScreen(ScreenBuffer);
+}
+
+void ScrRemoveFirstLine(PSCREEN_BUFFER ScreenBuffer)
+{
+    // uint16_t totalNumbersOfMovedItems = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->Columns);
+    for (int i = 0; i < MAX_COLUMNS; i++)
+    {
+        DebugBreak();
+        ScreenBuffer->Buffer[i] = ScreenBuffer->Buffer[i + MAX_COLUMNS];
+    }
+
+    ScreenBuffer->Line--;
+    ScrFlushScreenBufferOnScreen(ScreenBuffer);
 }
