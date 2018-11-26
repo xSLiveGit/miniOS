@@ -74,7 +74,8 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
             else:
                 continue
             lnk += ' "' + output + '" '
-    cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
+    cmd = 'ld -O0 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
+    # cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
     # print('[INFO] ld cmd: %s'%(cmd))
     os.system(cmd)
     # os.system('ld -O0 -Tdata 0x125000 -Tbss 0x150000 --oformat binary -o "' + obj + '" "' + lnk + '" -m elf_x86_64')

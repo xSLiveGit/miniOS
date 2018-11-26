@@ -127,9 +127,8 @@ void PrvScrMoveLine(
 void ScrRemoveFirstLine(PSCREEN_BUFFER ScreenBuffer)
 {
     // uint16_t totalNumbersOfMovedItems = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->Columns);
-    for (int i = 0; i < MAX_COLUMNS; i++)
+    for (int i = 0; i < MAX_COLUMNS * MAX_LINES - MAX_COLUMNS; i++)
     {
-        DebugBreak();
         ScreenBuffer->Buffer[i] = ScreenBuffer->Buffer[i + MAX_COLUMNS];
     }
 

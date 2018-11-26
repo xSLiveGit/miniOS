@@ -2,6 +2,7 @@
 #define _SCREEN_H_
 
 #include "types.h"
+//#include "os_utils.h"
 
 #define MAX_LINES       25
 #define MAX_COLUMNS     80
@@ -46,7 +47,7 @@ typedef struct _SCREEN_ITEM
 #pragma pack(push, 1)
 typedef struct _SCREEN_BUFFER
 {
-    SCREEN_ITEM     Buffer[MAX_OFFSET];
+    SCREEN_ITEM      Buffer[MAX_OFFSET];
     uint16_t         Line;
     uint16_t         Columns;
     uint16_t         IdxInColumn;

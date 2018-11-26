@@ -308,6 +308,7 @@ Realm64:
     add rax, 40000000h
     call rax
     ; break
+    cli;
     jmp cProgram   
 
 TestPaginationRoutine:

@@ -36,7 +36,7 @@ BootPoint:
 ; start reading sectors
 .Read:
     mov	    ah, 0x02				; function 2
-    mov	    al, 5					; read 2 sectors
+    mov	    al, 30					; read 30 sectors
     mov	    ch, 0					; cylinder
     mov	    cl, 2					; sector to read (The second sector)
     mov	    dh, 0					; head number

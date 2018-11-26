@@ -20,12 +20,15 @@ int main(void)
     // char tst_printf_done[] = "trebuia sa fi fost afisat printf";
     
     int stringSize = os_strlen(str);
-
+    DebugBreak();
     for(int i=0; i < stringSize; i++)
     {
         ScrWriteOnScreen(&gEnviroment.ScreenBuffer, str[i]);
     }
     ScrWriteOnScreen(&gEnviroment.ScreenBuffer, '\n');
+
+        DebugBreak();
+    
 
     stringSize = sizeof("a mers nl") - 1;
     for(int i=0; i < stringSize; i++)
@@ -39,16 +42,21 @@ int main(void)
     char customStr[] = "*Acesta este stringul custom*";
     os_printf(format, customStr, 245);
     DebugBreak();
-    // ScrRemoveFirstLine(&gEnviroment.ScreenBuffer);
+    ScrRemoveFirstLine(&gEnviroment.ScreenBuffer);
     DebugBreak();
+
+
     os_printf(a_cr);
-    PrvScrMoveLine(1,0,&gEnviroment.ScreenBuffer);
-    os_printf(a_cr);
-    os_printf(a_cr);
-    os_printf(a_cr);
-    os_printf(a_cr);
+   // PrvScrMoveLine(1,0,&gEnviroment.ScreenBuffer);
     os_printf(a_cr);
     os_printf(a_cr);
+    os_printf(a_cr);
+    os_printf(a_cr);
+    os_printf(a_cr);
+    os_printf(a_cr);
+
+
+
     for(int i=0; i<100; i++)
     {
         char c[] = "test\n";
