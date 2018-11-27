@@ -68,7 +68,6 @@ bool ScrWriteInBuffer(
 
     if (Char == '\n')
     {
-        DebugBreak();
         if (ScreenBuffer->Line + 1 >= MAX_LINES)
             ScrRemoveFirstLine(ScreenBuffer);
 

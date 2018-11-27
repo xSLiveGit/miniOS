@@ -1,6 +1,8 @@
 %define ORIGIN_MBR 7C00h
 %define ORIGIN_SSL 7E00h
 %define ORIGIN_KERNEL 8000h
+%define ORIGIN_BASE_KERNEL    110000h
+
 %define break xchg bx, bx
 
 %define PAG_PML4T           101000h
@@ -170,6 +172,13 @@ PMode32:
     mov fs, ax 
     mov gs, ax 
 	
+    ; Move kernel from origin to base
+    mov esi, ORIGIN_KERNEL
+    mov edi, ORIGIN_BASE_KERNEL
+    mov ecx, 512 * 40 ;because we load 40 sectors
+    cld 
+    rep movsb
+
     ; disable pagination
     mov eax, cr0
     and eax, 7FFFh  ; Clear the PG-bit, which is bit 31
@@ -312,8 +321,8 @@ Realm64:
     jmp cProgram   
 
 TestPaginationRoutine:
-    break
+    ; break
     ret
 
 
-cProgram:    
+cProgram:

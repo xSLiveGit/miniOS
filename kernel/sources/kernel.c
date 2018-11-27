@@ -1,8 +1,8 @@
 #include "kernel.h"
 #include "osrt.h"
 #include "os_string.h"
+#include "asm_def.h"
 
-extern 
 
 int main(void)
 {
@@ -28,7 +28,7 @@ int main(void)
     ScrWriteOnScreen(&gEnviroment.ScreenBuffer, '\n');
 
         DebugBreak();
-    
+
 
     stringSize = sizeof("a mers nl") - 1;
     for(int i=0; i < stringSize; i++)
@@ -44,7 +44,11 @@ int main(void)
     DebugBreak();
     ScrRemoveFirstLine(&gEnviroment.ScreenBuffer);
     DebugBreak();
-
+    
+    char trapFrameMsg[] = "I will dump trapframe: \n";
+    os_printf(trapFrameMsg);
+    DebugBreak();
+    AsmIntDumpTrapFrame();
 
     os_printf(a_cr);
    // PrvScrMoveLine(1,0,&gEnviroment.ScreenBuffer);
@@ -54,8 +58,6 @@ int main(void)
     os_printf(a_cr);
     os_printf(a_cr);
     os_printf(a_cr);
-
-
 
     for(int i=0; i<100; i++)
     {

@@ -70,7 +70,6 @@ void os_printf(
     , ...
 )
 {
-    DebugBreak();
     void* argument = (void*)(&Format);
 
     while(*Format != 0)
