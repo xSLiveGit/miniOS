@@ -15,7 +15,7 @@ typedef struct _GLOBALS
 } GLOBALS, *PGLOBALS;
 #pragma pack(pop)
 
-bool InitEnviroment(); //trus means success
+bool InitEnviroment(); //true means success
 void os_memset(void* Destionation, size_t Size, uint8_t Byte);
 
 GLOBALS gEnviroment;

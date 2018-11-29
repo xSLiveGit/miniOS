@@ -2,7 +2,7 @@
 
 void TrapFrame64Dump(PTRAP_FRAME_64 TrapFrame)
 {
-    char msg1[] = "RAX: %x  RSI:  %x\n";
+    // char msg1[] = "RAX: %x  RSI:  %x\n";
     char msg2[] = "RBX: %x  RDI:  %x\n";
     char msg3[] = "RCX: %x  RBP:  %x\n";
     char msg4[] = "RDX: %x  Flags: %x\n";
@@ -12,8 +12,8 @@ void TrapFrame64Dump(PTRAP_FRAME_64 TrapFrame)
     char msg8[] = "R14: %x  R15:   %x\n";
 
 
-    // os_printf("RAX: %x  RSI:  %x\n", TrapFrame->Rax, TrapFrame->Rsi);
-    os_printf(msg1, TrapFrame->Rax, TrapFrame->Rsi);
+    os_printf("RAX: %x  RSI:  %x\n", TrapFrame->Rax, TrapFrame->Rsi);
+    // os_printf(msg1, TrapFrame->Rax, TrapFrame->Rsi);
     os_printf(msg2, TrapFrame->Rbx, TrapFrame->Rdi);
     os_printf(msg3, TrapFrame->Rcx, TrapFrame->Rbp);
     os_printf(msg4, TrapFrame->Rdx, TrapFrame->Flags);
