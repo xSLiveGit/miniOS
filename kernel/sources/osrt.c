@@ -53,8 +53,8 @@ void PrvPrinfHex(uint64_t Number)
 
     while (Number != 0)
     {
-        Number = Number / 16;
         result[--size] = PrvHexdigitToChar(Number % 16); 
+        Number = Number / 16;
     }
 
     PrvPrintString(result);
@@ -63,6 +63,34 @@ void PrvPrinfHex(uint64_t Number)
 void PrvPrintChar(char Character)
 {
     ScrWriteOnScreen(&gEnviroment.ScreenBuffer, Character);
+}
+
+void PrvPrintDec(int Number)
+{
+    char result[19] = {0};
+    uint16_t size = sizeof(result) - 1;
+    bool isNegative = Number < 0;
+    
+    if(Number == 0)
+    {
+        result[--size] = '0';
+    }
+ 
+    if(isNegative)
+        Number = -Number;
+
+    while (Number != 0)
+    {
+        result[--size] = PrvHexdigitToChar(Number % 10); 
+        Number = Number / 10;
+    }
+
+    if(isNegative)
+    {
+        result[--size] = '-';
+    }
+
+    PrvPrintString(result + size);
 }
 
 void os_printf(
@@ -89,6 +117,9 @@ void os_printf(
         {
         case 'x':
             PrvPrinfHex(*(uint64_t*)argument);
+            break;
+        case 'd':
+            PrvPrintDec(*(int*)argument);
             break;
         case 's':
             PrvPrintString(*(char**)argument);

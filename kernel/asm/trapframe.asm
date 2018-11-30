@@ -4,7 +4,6 @@
 %define STRUCTURE_FIELD_OFFSET(Structure, Field) ((Field) - (Structure))
 
 extern TrapFrame64Dump
-extern LogCritical
 
 GLOBAL AsmIntDumpTrapFrame
 
@@ -74,9 +73,6 @@ AsmIntDumpTrapFrame:
     push rbp
     mov rbp, rsp
 
-    call LogCritical
-    DEBUGBREAK
-
     mov rdx, 0xABCDEF
     mov rbx, 0xABCDEF
     mov rax, 0xABCDEF
@@ -97,25 +93,13 @@ AsmIntDumpTrapFrame:
     mov QWORD [gTrapFrame + TRAP_FRAME.R13], r13
     mov QWORD [gTrapFrame + TRAP_FRAME.R14], r14
     mov QWORD [gTrapFrame + TRAP_FRAME.R15], r15
-    
-    ; mov QWORD [gTrapFrame + TRAP_FRAME.Flags], eflags
-
     pushf
     pop QWORD [gTrapFrame + TRAP_FRAME.Flags]
-    ; mov [gTrapFrame + STRUCTURE_FIELD_OFFSET(TRAP_FRAME.Flags, Flags)], eflags
-
-    DEBUGBREAK
-    
-   
-    ; CREATE_TRAP_FRAME gTrapFrame
 
     mov QWORD [gTrapFrame + TRAP_FRAME.Rbp], 0xFEDCBA
 
-
     mov rcx, gTrapFrame ; put PTRAP_FRAME in rcx
     call TrapFrame64Dump ; void TrapFrameDump(PTRAP_FRAME)
-
-    DEBUGBREAK
 
     pop rbp
     ret
