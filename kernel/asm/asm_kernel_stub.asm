@@ -1,4 +1,5 @@
 extern main
+GLOBAL KernelStub
 
 [bits 64]
 KernelStub:

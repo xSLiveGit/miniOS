@@ -50,6 +50,13 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
 
     print('[DBG] binaryDirPath: {%s}, headerDirPath:{%s}, asmIncludesPath:{%s}'%(binaryDirPath, headersDirPath, asmIncludesPath))
 
+    kernelStubPath =  os.path.join(KernelPathDirectory, 'asm', 'asm_kernel_stub.asm')
+    output  = os.path.join(binaryDirPath, kernelStubPath + '.obj')
+    cmd = 'nasm -f elf64 -O0 -o "' + output + '" "' + kernelStubPath + '"'
+    os.system(cmd)
+    lnk += ' "' + output + '" '
+    print('asm stub is : [' + kernelStubPath + ']')
+
     for root, _, files in os.walk(KernelPathDirectory):
         for f in files:
             src     = os.path.join(root, f)
@@ -57,10 +64,9 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
             asmo    = os.path.join(binaryDirPath, f + '.asmo')
             # print('src: {%s} output: {%s} asmo: {%s}'%(src, output, asmo))
 
-            if f.endswith('.asm'):
+            if f.endswith('.asm') and str(f) != 'asm_kernel_stub.asm':
+                print('asm file is: ' + str(f))
                 cmd = 'nasm -f elf64 -O0 -o "' + output + '" "' + src + '"'
-                # cmd = 'nasm ' + ' -f elf64 "'  + asmIncludesPath + '" -O0 -o "' + output + '" "' + src + '"'
-                # print('cmd: %s'%(cmd))
                 os.system(cmd)
 
             elif f.endswith('.c'):
@@ -74,6 +80,7 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
             else:
                 continue
             lnk += ' "' + output + '" '
+    print('LNK: ' + str(lnk))
     cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
     # cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
     # print('[INFO] ld cmd: %s'%(cmd))

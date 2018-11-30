@@ -45,6 +45,7 @@ int main(void)
     ScrRemoveFirstLine(&gEnviroment.ScreenBuffer);
     DebugBreak();
     
+    DebugBreak();
     char trapFrameMsg[] = "I will dump trapframe: \n";
     os_printf(trapFrameMsg);
     DebugBreak();
@@ -57,11 +58,14 @@ int main(void)
     os_printf(a_cr);
     os_printf(a_cr);
     os_printf(a_cr);
+    DebugBreak();
     os_printf(a_cr);
 
     for(int i=0; i<100; i++)
     {
         char c[] = "test\n";
+        DebugBreak();
+
         os_printf(c);
     }
 

@@ -11,6 +11,7 @@
 %define PAG_PT              104000h
 
 %define FIELD_OFFSET(Structure, Field) ((Field) - (Structure))
+extern KernelStub
 
 [bits 16]
 [org ORIGIN_SSL]
@@ -159,8 +160,7 @@ Gdt32:
 ;******************************************************
 [bits 32]
 PMode32:
-
-    ; break    
+  
 	;-------------------------------;
 	;   Set registers		;
 	;-------------------------------;
@@ -175,9 +175,11 @@ PMode32:
     ; Move kernel from origin to base
     mov esi, ORIGIN_KERNEL
     mov edi, ORIGIN_BASE_KERNEL
-    mov ecx, 512 * 40 ;because we load 40 sectors
+    mov ecx, 512 * 30 ;because we load 40 sectors
     cld 
+    break
     rep movsb
+    break
 
     ; disable pagination
     mov eax, cr0
@@ -242,7 +244,6 @@ PMode32:
 
     lgdt [Gdt64.pointer]         ; Load the 64-bit global descriptor table.
 
-    ; break
     ; Enable paging and protected mode
     mov eax, cr0                 ; Set the A-register to control register 0.
     or eax, (1 << 31) | (1 << 0)     ; Set the PG-bit, which is the 31nd bit, and the PM-bit, which is the 0th bit.
@@ -294,7 +295,6 @@ Gdt64:
 [BITS 64]
  
 Realm64:
-    ; break
     cli                           ; Clear the interrupt flag.
     mov ax, FIELD_OFFSET(Gdt64, Gdt64.data_descriptor)            ; Set the A-register to the data descriptor.
     mov ds, ax                    ; Set the data segment to the A-register.
@@ -305,24 +305,26 @@ Realm64:
     mov edi, 0xB8000              ; Set the destination index to 0xB8000.
     mov rax, 0x1F201F201F201F20   ; Set the A-register to 0x1F201F201F201F20.
     mov ecx, 500                  ; Set the C-register to 500.
-   
+    
     rep stosq                     ; Clear the screen.
     
-   ; break
     call TestPaginationRoutine
-    ; break
+ 
     mov rax, TestPaginationRoutine
     call rax
-    break
+
     add rax, 40000000h
     call rax
-    ; break
     cli;
-    jmp cProgram   
+    break
+    break
+    mov rax, ORIGIN_BASE_KERNEL
+	call rax
 
 TestPaginationRoutine:
     ; break
     ret
 
+times 499 - ($-$$) db 0
 
-cProgram:
+DB 0x4d, 0x41, 0x52, 0x49, 0x45, 0x53, 0x20, 0x53, 0x45, 0x52, 0x47, 0x49, 0x55
