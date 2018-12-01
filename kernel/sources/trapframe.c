@@ -2,8 +2,6 @@
 
 void TrapFrame64Dump(PTRAP_FRAME_64 TrapFrame)
 {
-
-    // os_printf("RAX: %x  RSI:  %x\n", TrapFrame->Rax, TrapFrame->Rsi);
     os_printf("RAX: %x  RSI:  %x\n", TrapFrame->Rax, TrapFrame->Rsi);
     os_printf("RBX: %x  RDI:  %x\n", TrapFrame->Rbx, TrapFrame->Rdi);
     os_printf("RCX: %x  RBP:  %x\n", TrapFrame->Rcx, TrapFrame->Rbp);
@@ -12,6 +10,4 @@ void TrapFrame64Dump(PTRAP_FRAME_64 TrapFrame)
     os_printf("R10: %x  R11:   %x\n", TrapFrame->R10, TrapFrame->R11);
     os_printf("R12: %x  R13:   %x\n", TrapFrame->R12, TrapFrame->R13);
     os_printf("R14: %x  R15:   %x\n", TrapFrame->R14, TrapFrame->R15);
-    DebugBreak();
-
 }

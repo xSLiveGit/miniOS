@@ -52,6 +52,36 @@
     pop rax 
 %endmacro
 
+GLOBAL IntInitPic
+GLOBAL IntAsmBasic
+GLOBAL IntAsmLidt;
+extern AsmIntDumpTrapFrame;
+
+; void IntAsmLidt(PIDT Idt)
+IntAsmLidt:
+    push rbp
+	mov rbp, rsp
+
+    cli
+	lidt [rcx]
+    sti
+    
+	pop rbp
+	ret
+
+
+; void IntAsmBasic(void)
+IntAsmBasic:
+    xchg bx, bx
+    xchg bx, bx
+    xchg bx, bx
+    xchg bx, bx
+    xchg bx, bx
+    call AsmIntDumpTrapFrame
+    xchg bx, bx
+
+    iretq 
+
 ; void IntInitPic(void)
 IntInitPic:
 

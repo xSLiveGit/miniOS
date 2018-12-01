@@ -12,6 +12,7 @@ typedef signed int   	    int32_t;
 typedef unsigned int 	    uint32_t;
 typedef unsigned long long 	uint64_t;
 typedef long long 	        int64_t;
+
 typedef int8_t 	            int8;
 typedef uint8_t 	        uint8;
 typedef int16_t 	        int16;
@@ -20,12 +21,23 @@ typedef int32_t 	        int32;
 typedef uint32_t 	        uint32;
 typedef int64_t 	        int64;
 typedef uint64_t 	        uint64;
+
 typedef unsigned char 	    uchar_t;
 typedef uint32_t 	        wchar_t;
 typedef uint32_t 	        size_t;
 typedef uint32_t 	        addr_t;
 typedef int32_t 	        pid_t;
 typedef unsigned char       bool;
+
+
+#ifndef VOID
+#define VOID void
+#endif //!VOID
+
+#ifndef PVOID
+#define PVOID VOID*
+#endif //!PVOID
+
 
 #ifndef true
 #define true 1

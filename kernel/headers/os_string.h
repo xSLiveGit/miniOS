@@ -6,5 +6,5 @@
 #endif //!NULL
 
 int os_strlen(char* Buffer);
-
+    
 #endif //!_OS_STRING_H_

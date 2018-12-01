@@ -2,6 +2,7 @@
 #include "osrt.h"
 #include "os_string.h"
 #include "asm_def.h"
+#include "interupts.h"
 
 
 int main(void)
@@ -21,6 +22,9 @@ int main(void)
     os_printf("I will dump trapframe: \n");
     AsmIntDumpTrapFrame();
     DebugBreak();
+
+    os_printf("I will initialize idt\n");
+    IntInitializeIdt(&gEnviroment.Idt, &gEnviroment.IdtDescriptr);
 
     for(int i=0; i<100; i++)
     {

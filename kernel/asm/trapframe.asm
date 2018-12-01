@@ -47,7 +47,7 @@ gTrapFrame: ISTRUC TRAP_FRAME
 IEND
 
 
-%macro CREATE_TRAP_FRAME 1
+%macro COMPLETE_TRAPGRAME_FIELDS 1
     mov [%1 + TRAP_FRAME.Rax], rax
     mov [%1 + TRAP_FRAME.Rbx], rbx
     mov [%1 + TRAP_FRAME.Rcx], rcx
@@ -73,33 +73,11 @@ AsmIntDumpTrapFrame:
     push rbp
     mov rbp, rsp
 
-    mov rdx, 0xABCDEF
-    mov rbx, 0xABCDEF
-    mov rax, 0xABCDEF
-    mov rcx, 0xABCDEF
+    COMPLETE_TRAPGRAME_FIELDS gTrapFrame;
 
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rax], rax
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rbx], rbx
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rcx], rcx
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rdx], rdx
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rsi], rsi
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rdi], rdi
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rbp], rbp
-    mov QWORD [gTrapFrame + TRAP_FRAME.R8],  r8
-    mov QWORD [gTrapFrame + TRAP_FRAME.R9],  r9
-    mov QWORD [gTrapFrame + TRAP_FRAME.R10], r10
-    mov QWORD [gTrapFrame + TRAP_FRAME.R11], r11
-    mov QWORD [gTrapFrame + TRAP_FRAME.R12], r12
-    mov QWORD [gTrapFrame + TRAP_FRAME.R13], r13
-    mov QWORD [gTrapFrame + TRAP_FRAME.R14], r14
-    mov QWORD [gTrapFrame + TRAP_FRAME.R15], r15
-    pushf
-    pop QWORD [gTrapFrame + TRAP_FRAME.Flags]
-
-    mov QWORD [gTrapFrame + TRAP_FRAME.Rbp], 0xFEDCBA
-
+    ; TrapFrameDump(&gTrapFrame)
     mov rcx, gTrapFrame ; put PTRAP_FRAME in rcx
-    call TrapFrame64Dump ; void TrapFrameDump(PTRAP_FRAME)
+    call TrapFrame64Dump 
 
     pop rbp
     ret

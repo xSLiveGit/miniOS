@@ -3,17 +3,10 @@
 
 #include "screen.h"
 #include "asm_def.h"
+#include "globals.h"
 // #include "os_utils.h"
 
-#define MAX(a,b) (a) > (b) ? (a) : (b)
-#define MIN(a,b) (a) < (b) ? (a) : (b)
 
-#pragma pack(push, 1)
-typedef struct _GLOBALS
-{
-    SCREEN_BUFFER   ScreenBuffer;
-} GLOBALS, *PGLOBALS;
-#pragma pack(pop)
 
 bool InitEnviroment(); //true means success
 void os_memset(void* Destionation, size_t Size, uint8_t Byte);

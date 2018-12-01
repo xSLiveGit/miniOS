@@ -9,6 +9,7 @@
 %define PAG_PDPT            102000h
 %define PAG_PDT             103000h
 %define PAG_PT              104000h
+%define PAG_PT2             105000h
 
 %define FIELD_OFFSET(Structure, Field) ((Field) - (Structure))
 extern KernelStub
@@ -212,11 +213,15 @@ PMode32:
     or eax, 3
     mov [PAG_PDT], eax
 
-    ; Set up indentity map - first 2 mb is identity map
-    mov edi, PAG_PT
-    mov ebx, 0x00000003          ; Set the B-register to 0x00000003 for access(page is present and it's writable)
-    mov ecx, 512                 ; because we have 512 entries in PT
+    ; PAG_PDT[1] = PAG_PT2
+    mov eax, PAG_PT2
+    or eax, 3
+    mov [PAG_PDT + 8], eax
 
+    ; Set up indentity map - first 4 mb is identity map
+    mov edi, PAG_PT
+    mov ebx, 0x00000003             ; Set the B-register to 0x00000003 for access(page is present and it's writable)
+    mov ecx, 2 * 512                ; because we have 512 entries in PT and we'll use 2 consecutive entries
     ; PDPT[1] = PDT 
 	mov dword [PAG_PDPT + 8], PAG_PDT | 011b  ; user mode / R-W / PDPT present
 
@@ -225,11 +230,10 @@ PMode32:
 
 .SetEntry:
     mov DWORD [edi], ebx         ; Set the uint32_t at the destination index to the B-register.
-    add ebx, 0x1000              ; Add 0x1000 to the B-register.
+    add ebx, 0x1000              ; Add 0x2000 to the B-register because we have 2 consecutives tables
     add edi, 8                   ; Add eight to the destination index.
     loop .SetEntry               ; Set the next entry.
     
-
     mov eax, cr4                 ; Set the A-register to control register 4.
     or eax, 1 << 5               ; Set the PAE-bit, which is the 6th bit (bit 5).
     mov cr4, eax                 ; Set control register 4 to the A-register.
@@ -319,6 +323,7 @@ Realm64:
     break
     break
     mov rax, ORIGIN_BASE_KERNEL
+    add rax, 8000000000h ; test big addresses
 	call rax
 
 TestPaginationRoutine:
