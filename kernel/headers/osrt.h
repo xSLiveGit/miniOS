@@ -4,9 +4,6 @@
 #include "screen.h"
 #include "asm_def.h"
 #include "globals.h"
-// #include "os_utils.h"
-
-
 
 bool InitEnviroment(); //true means success
 void os_memset(void* Destionation, size_t Size, uint8_t Byte);

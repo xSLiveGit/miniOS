@@ -1,6 +1,7 @@
 #include "os_keyboard.h"
 #include "screen.h"
 #include "osrt.h"
+#include "pic.h"
 
 static const char key_range1_0[]    = "1234567890";
 static const char key_rangeQ_P[]    = "qwertyuiop";
@@ -145,3 +146,15 @@ void IsrKeyboardKeyHandler(uint8_t Code)
         os_printf("IsrAsmKeyboard was called for unhandled code: %x\n", Code);
     }
 }
+
+void IsrKeyboard(void)
+{
+    __cli();
+
+    uint8_t code = __inb(KYBRD_ENC_INPUT_BUF);
+    IsrKeyboardKeyHandler((code));
+    __outb(PIC_MASTER_CTRL, PIC_EOI);
+
+    __sti();
+}
+

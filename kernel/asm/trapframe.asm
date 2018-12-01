@@ -1,15 +1,12 @@
-
 %define DEBUGBREAK xchg bx, bx
 %define STRUCTURE_FIELD_OFFSET(Structure, Field) ((Field) - (Structure))
 
 %include "trapframe.inc"
 %include "utils.inc"
 
-extern TrapFrame64Dump
-
 GLOBAL AsmIntDumpTrapFrame
 GLOBAL gTrapFrame
-
+GLOBAL __load_trap_frame;
 
 
 [Bits 64]
@@ -32,18 +29,12 @@ gTrapFrame: ISTRUC TRAP_FRAME
     AT TRAP_FRAME.R15,      dq 0
 IEND
 
-
-; void AsmIntDumpTrapFrame(void)
-AsmIntDumpTrapFrame:
+; void __load_trap_frame(PTRAP_FRAME TrapFrame)
+__load_trap_frame:
     push rbp
     mov rbp, rsp
 
-    COMPLETE_TRAPGRAME_FIELDS gTrapFrame;
-
-    ; TrapFrame64Dump(&gTrapFrame)
-    mov rcx, gTrapFrame ; put PTRAP_FRAME in rcx
-    call TrapFrame64Dump 
+    COMPLETE_TRAPGRAME_FIELDS rcx
 
     pop rbp
-    
     ret

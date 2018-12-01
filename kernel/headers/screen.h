@@ -27,7 +27,7 @@
 
 
 #define BACKGROUND_COLOUR COLOUR_BLACK
-
+#define FOREGROUND_COLOUR COLOUR_GREEN
 #pragma pack(push, 1)
 typedef struct _COLOR_ITEM
 {

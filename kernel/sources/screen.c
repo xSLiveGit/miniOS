@@ -126,9 +126,20 @@ void PrvScrMoveLine(
 void ScrRemoveFirstLine(PSCREEN_BUFFER ScreenBuffer)
 {
     // uint16_t totalNumbersOfMovedItems = ScrGetOffset(ScreenBuffer->Line, ScreenBuffer->Columns);
-    for (int i = 0; i < MAX_COLUMNS * MAX_LINES - MAX_COLUMNS; i++)
+    int i=0;
+    for (i = 0; i < MAX_COLUMNS * MAX_LINES - MAX_COLUMNS; i++)
     {
         ScreenBuffer->Buffer[i] = ScreenBuffer->Buffer[i + MAX_COLUMNS];
+    }
+
+    SCREEN_ITEM blankItem = { 0 };
+    blankItem.Character = ' ';
+    blankItem.Color.BackgroundColour = BACKGROUND_COLOUR;
+    blankItem.Color.ForegoundColour = FOREGROUND_COLOUR;
+
+    while(i < MAX_COLUMNS * MAX_LINES)
+    {
+        ScreenBuffer->Buffer[i++] =         blankItem;
     }
 
     ScreenBuffer->Line--;
