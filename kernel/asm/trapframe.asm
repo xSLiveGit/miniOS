@@ -6,6 +6,7 @@
 extern TrapFrame64Dump
 
 GLOBAL AsmIntDumpTrapFrame
+GLOBAL gTrapFrame
 
 STRUC TRAP_FRAME
     .Rax:   resq 1
@@ -75,9 +76,10 @@ AsmIntDumpTrapFrame:
 
     COMPLETE_TRAPGRAME_FIELDS gTrapFrame;
 
-    ; TrapFrameDump(&gTrapFrame)
+    ; TrapFrame64Dump(&gTrapFrame)
     mov rcx, gTrapFrame ; put PTRAP_FRAME in rcx
     call TrapFrame64Dump 
 
     pop rbp
+    
     ret

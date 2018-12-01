@@ -35,8 +35,8 @@ typedef struct _IDT
 #pragma pack(push, 1)
 typedef struct _IDT_INFO
 {
-	PIDT     IdtBase;
 	uint16_t IdtSize;
+	PIDT     IdtBase;
 } IDT_INFO, *PIDT_INFO;
 #pragma pack(pop)
 

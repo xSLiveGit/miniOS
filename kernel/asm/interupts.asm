@@ -14,6 +14,8 @@
 %define IRQ_0	0x20				; IRQs 0-7 mapped to use interrupts 0x20-0x27
 %define IRQ_8	0x28				; IRQs 8-15 mapped to use interrupts 0x28-0x36
 
+%define PIC_EOI		    0x20	
+
 %macro PUSH_A 0
     push rax 
     push rbx 
@@ -52,10 +54,54 @@
     pop rax 
 %endmacro
 
+
+STRUC TRAP_FRAME
+    .Rax:   resq 1
+    .Rbx:   resq 1
+    .Rcx:   resq 1
+    .Rdx:   resq 1 
+    .Rsi:   resq 1 
+    .Rdi:   resq 1 
+    .Rbp:   resq 1 
+    .Flags: resq 1 
+    .R8:    resq 1
+    .R9:    resq 1
+    .R10:   resq 1
+    .R11:   resq 1
+    .R12:   resq 1
+    .R13:   resq 1
+    .R14:   resq 1
+    .R15:   resq 1
+ENDSTRUC
+
+%macro COMPLETE_TRAPGRAME_FIELDS 1
+    mov [%1 + TRAP_FRAME.Rax], rax
+    mov [%1 + TRAP_FRAME.Rbx], rbx
+    mov [%1 + TRAP_FRAME.Rcx], rcx
+    mov [%1 + TRAP_FRAME.Rdx], rdx
+    mov [%1 + TRAP_FRAME.Rsi], rsi
+    mov [%1 + TRAP_FRAME.Rdi], rdi
+    mov [%1 + TRAP_FRAME.Rbp], rbp
+    mov [%1 + TRAP_FRAME.R8],  r8
+    mov [%1 + TRAP_FRAME.R9],  r9
+    mov [%1 + TRAP_FRAME.R10], r10
+    mov [%1 + TRAP_FRAME.R11], r11
+    mov [%1 + TRAP_FRAME.R12], r12
+    mov [%1 + TRAP_FRAME.R13], r13
+    mov [%1 + TRAP_FRAME.R14], r14
+    mov [%1 + TRAP_FRAME.R15], r15
+    
+    pushf
+    pop QWORD [%1 + TRAP_FRAME.Flags]
+%endmacro
+
 GLOBAL IntInitPic
 GLOBAL IntAsmBasic
 GLOBAL IntAsmLidt;
+GLOBAL IntAsmTrapFrame;
 extern AsmIntDumpTrapFrame;
+extern TrapFrame64Dump;
+extern gTrapFrame;
 
 ; void IntAsmLidt(PIDT Idt)
 IntAsmLidt:
@@ -72,15 +118,37 @@ IntAsmLidt:
 
 ; void IntAsmBasic(void)
 IntAsmBasic:
-    xchg bx, bx
-    xchg bx, bx
-    xchg bx, bx
-    xchg bx, bx
-    xchg bx, bx
-    call AsmIntDumpTrapFrame
+ 	cli
+	PUSH_A
+
+	mov al, PIC_EOI
+	out PIC_MASTER_CTRL, al
+
+	POP_A
+	sti 
+	iretq 
+
+; void IntAsmTrapFrame(void)
+IntAsmTrapFrame:
+ 	cli
+    
+    ; xchg bx, bx
+    ; call AsmIntDumpTrapFrame
+    ; xchg bx, bx
+
+    COMPLETE_TRAPGRAME_FIELDS gTrapFrame;
+
+    ; TrapFrame64Dump(&gTrapFrame)
+    mov rcx, gTrapFrame ; put PTRAP_FRAME in rcx
+    call TrapFrame64Dump 
+
+    mov al, PIC_EOI
+	out PIC_MASTER_CTRL, al
+
     xchg bx, bx
 
-    iretq 
+    sti
+    iretq
 
 ; void IntInitPic(void)
 IntInitPic:
