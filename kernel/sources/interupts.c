@@ -62,7 +62,9 @@ IntInitializeIdt(
     // IntInitPic();
 
     DebugBreak();
-    IntAsmLidt(IdtDescriptor); //extern void IntAsmLidt(PIDT_INFO);
+    __cli();
+    __lidt(IdtDescriptor); //extern void IntAsmLidt(PIDT_INFO);
+    __sti();
 }
 
 void IsrBasic(void)
@@ -76,15 +78,15 @@ void IntPrvFillIdt(PIDT Idt)
 {
     for(size_t i=0; i< IDT_NO_CRITICAL_ENTRIES; i++)
     {
-        IntIdtFillEntry(&(Idt->Entries[i]), &IsrCritical);
+        IntIdtFillEntry(&(Idt->Entries[i]), &_IntAsmCritical);
     }
 
     for(size_t i=IDT_NO_CRITICAL_ENTRIES; i<IDT_NO_ENTRIES; i++)
     {
-        IntIdtFillEntry(&(Idt->Entries[i]), &IntAsmBasic);
+        IntIdtFillEntry(&(Idt->Entries[i]), &_IntAsmBasic);
     }
         
-    IntIdtFillEntry(&(Idt->Entries[33]), &IsrKeyboard);
+    IntIdtFillEntry(&(Idt->Entries[33]), &_IntAsmIsrKeyboard);
 }
 
 void IntIdtFillEntry(
@@ -99,4 +101,19 @@ void IntIdtFillEntry(
     Entry->Ist          = 0;
     Entry->Selector     = 0x8;  
     Entry->Flags        = 0x8E;// P = 1b; DPL = 00b; Reserved = 0b; type = 1110b -> code | conforming | executable and readable | not accessed
+}
+
+void IsrCritical(void)
+{
+    __cli();
+    TRAP_FRAME_64 frame = {0};
+    
+    __load_trap_frame(&frame);
+    TrapFrame64Dump(&frame);
+
+    __outb(PIC_MASTER_CTRL, PIC_EOI);
+    
+    __hlt();
+
+    __sti();
 }

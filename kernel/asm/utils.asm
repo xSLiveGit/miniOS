@@ -42,7 +42,7 @@ __cli:
 
 ; void __lidt(PVOID)
 __lidt:
-    lidt    [ecx]
+    lidt    [rcx]
     ret
 
 ; void __outb(uint16_t Port, uint8_t Data);

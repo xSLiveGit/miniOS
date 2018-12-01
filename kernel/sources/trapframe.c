@@ -1,21 +1,6 @@
 #include "trapframe.h"
 #include "os_definitions.h"
 
-void IsrCritical(void)
-{
-    __cli();
-    TRAP_FRAME_64 frame = {0};
-    
-    __load_trap_frame(&frame);
-    TrapFrame64Dump(&frame);
-
-    __outb(PIC_MASTER_CTRL, PIC_EOI);
-    
-    __hlt();
-
-    __sti();
-}
-
 
 void TrapFrame64Dump(PTRAP_FRAME_64 TrapFrame)
 {

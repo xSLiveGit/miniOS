@@ -3,6 +3,10 @@
 
 #include "os_definitions.h"
 
+void IsrBasic(void);
+void IsrCritical(void);
+
+
 void IntInitializeIdt(
     PIDT    	Idt,
 	PIDT_INFO	IdtDescriptor

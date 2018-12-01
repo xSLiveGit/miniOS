@@ -4,60 +4,28 @@
 %include "utils.inc"
 %include "keyboard.inc"
 
-GLOBAL IntAsmBasic;
-GLOBAL IntAsmLidt;
-; GLOBAL IntAsmTrapFrame;
+GLOBAL _IntAsmBasic
+GLOBAL _IntAsmCritical
+GLOBAL _IntAsmIsrKeyboard
 
-extern AsmIntDumpTrapFrame;
-extern TrapFrame64Dump;
-extern gTrapFrame;
-extern IsrKeyboardKeyHandler;
-
-; void IntAsmLidt(PIDT Idt)
-IntAsmLidt:
-    push rbp
-	mov rbp, rsp
-
-    cli
-	lidt [rcx]
-    sti
-    
-	pop rbp
-	ret
+extern IsrCritical;
+extern IsrKeyboard
+extern IsrBasic
 
 
 ; void IntAsmBasic(void)
-IntAsmBasic:
- 	cli
-	PUSH_A
-
-	mov al, PIC_EOI
-	out PIC_MASTER_CTRL, al
-
-	POP_A
-	sti 
+_IntAsmBasic:
+	call IsrBasic
 	iretq 
 
-; void IntAsmTrapFrame(void)
-; IntAsmTrapFrame:
-;  	cli
-    
-;     ; xchg bx, bx
-;     ; call AsmIntDumpTrapFrame
-;     ; xchg bx, bx
 
-;     COMPLETE_TRAPGRAME_FIELDS gTrapFrame;
-
-;     ; TrapFrame64Dump(&gTrapFrame)
-;     mov rcx, gTrapFrame ; put PTRAP_FRAME in rcx
-;     call TrapFrame64Dump 
-
-;     mov al, PIC_EOI
-; 	out PIC_MASTER_CTRL, al
-
-;     xchg bx, bx
-
-;     sti
-;     iretq
+; void IntAsmCritical(void)
+_IntAsmCritical:
+	call IsrCritical
+	iretq
 
 
+; void IntAsmIsrKeyboard(void)
+_IntAsmIsrKeyboard:
+	call IsrKeyboard
+	iretq

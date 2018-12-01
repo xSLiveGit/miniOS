@@ -29,15 +29,15 @@ int main(void)
     __hlt();
 
 
-    os_printf("I will divide by 0 and i will expect trap frame: \n");
-    DebugBreak();
-    int zero = 1;
-    zero--;
-    int c = 3 / zero;
-    if(zero != 0)
-    {
-        os_printf("%d\n", c);
-    }
+    // os_printf("I will divide by 0 and i will expect trap frame: \n");
+    // DebugBreak();
+    // int zero = 1;
+    // zero--;
+    // int c = 3 / zero;
+    // if(zero != 0)
+    // {
+    //     os_printf("%d\n", c);
+    // }
 
 
     for(int i=0; i<100; i++)
