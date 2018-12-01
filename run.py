@@ -58,7 +58,7 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
             # print('src: {%s} output: {%s} asmo: {%s}'%(src, output, asmo))
 
             if f.endswith('.asm'):
-                cmd = 'nasm -f elf64 -O0 -o "' + output + '" "' + src + '"'
+                cmd = 'nasm -I "' + asmIncludesPath + '" -f elf64 -O0 -o "' + output + '" "' + src + '"'
                 os.system(cmd)
 
             elif f.endswith('.c'):
