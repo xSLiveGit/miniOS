@@ -134,3 +134,22 @@ void ScrRemoveFirstLine(PSCREEN_BUFFER ScreenBuffer)
     ScreenBuffer->Line--;
     ScrFlushScreenBufferOnScreen(ScreenBuffer);
 }
+
+
+void ScrRemoveCharFromCurrentLine(
+    PSCREEN_BUFFER ScreenBuffer
+)
+{
+    if(ScreenBuffer->Columns == 0)
+    { 
+        return;
+    }
+
+
+    ScreenBuffer->Columns--;
+    ScreenBuffer->IdxInColumn--;
+    ScrWriteInBuffer(ScreenBuffer, ' ');
+    ScrFlushScreenBufferOnScreen(ScreenBuffer);
+    ScreenBuffer->Columns--;
+    ScreenBuffer->IdxInColumn--;
+}

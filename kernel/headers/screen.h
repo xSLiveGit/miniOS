@@ -83,6 +83,10 @@ void ScrRemoveFirstLine(
     PSCREEN_BUFFER ScreenBuffer
 );
 
+void ScrRemoveCharFromCurrentLine(
+    PSCREEN_BUFFER ScreenBuffer
+);
+
 
 
 #endif //_SCREEN_H_

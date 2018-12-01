@@ -130,6 +130,11 @@ void IsrKeyboardKeyHandler(uint8_t Code)
         gEnviroment.KeyboardInfo.IsCapsLockOn = 1 - gEnviroment.KeyboardInfo.IsCapsLockOn;
         return;
     }
+    else if(Code == 0xE)//Back space
+    {
+        ScrRemoveCharFromCurrentLine(&gEnviroment.ScreenBuffer);
+        return;
+    }
 
     if(chr != 0)
     {
