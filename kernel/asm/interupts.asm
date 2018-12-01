@@ -2,14 +2,18 @@
 %include "trapframe.inc"
 %include "interupts.inc"
 %include "utils.inc"
+%include "keyboard.inc"
 
-GLOBAL IntInitPic
-GLOBAL IntAsmBasic
+GLOBAL IntInitPic;
+GLOBAL IntAsmBasic;
 GLOBAL IntAsmLidt;
 GLOBAL IntAsmTrapFrame;
+GLOBAL IntAsmKeyboard;
+
 extern AsmIntDumpTrapFrame;
 extern TrapFrame64Dump;
 extern gTrapFrame;
+extern IsrKeyboardKeyHandler;
 
 ; void IntAsmLidt(PIDT Idt)
 IntAsmLidt:
@@ -35,6 +39,23 @@ IntAsmBasic:
 	POP_A
 	sti 
 	iretq 
+
+; void IsrAsmKeyboard(void)
+IntAsmKeyboard:
+    cli
+	PUSH_A
+
+	in al, KYBRD_ENC_INPUT_BUF
+	
+	movzx rcx, al ; move with zero extende
+	call IsrKeyboardKeyHandler
+
+	mov al, PIC_EOI
+	out PIC_MASTER_CTRL, al
+
+	POP_A
+	sti
+	iretq
 
 ; void IntAsmTrapFrame(void)
 IntAsmTrapFrame:
@@ -117,3 +138,5 @@ IntInitPic:
     ; pop rbp
     
     ret
+
+

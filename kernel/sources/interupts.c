@@ -35,6 +35,8 @@ void IntPrvFillIdt(PIDT Idt)
     {
         IntIdtFillEntry(&(Idt->Entries[i]), &IntAsmBasic);
     }
+        
+    IntIdtFillEntry(&(Idt->Entries[33]), &IntAsmKeyboard);
     
     uint64_t addr = (uint64_t)(((uint64_t)Idt->Entries[0].OffsetHigh << 32) + ((uint64_t)Idt->Entries[0].OffsetMid << 16) + ((uint64_t)Idt->Entries[0].OffsetLow));
     os_printf("IntAsmBasic addr reconstruction: %x\n", (uint64_t)(addr));

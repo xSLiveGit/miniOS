@@ -323,7 +323,7 @@ Realm64:
     break
     break
     mov rax, ORIGIN_BASE_KERNEL
-    add rax, 8000000000h ; test big addresses
+    ; add rax, 8000000000h ; test big addresses
 	call rax
 
 TestPaginationRoutine:

@@ -1,0 +1,4 @@
+%define KYBRD_ENC_INPUT_BUF	    0x60
+%define KYBRD_ENC_CMD_REG	    0x60
+%define KYBRD_CTRL_STATS_REG    0x64
+%define KYBRD_CTRL_CMD_REG      0x64

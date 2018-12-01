@@ -6,6 +6,9 @@ bool InitEnviroment()
 {
     os_memset(&gEnviroment, sizeof(gEnviroment), 0);
     ScrClearScreen();
+    
+    IntInitializeIdt(&(gEnviroment.Idt), &(gEnviroment.IdtDescriptr));
+
     return true;
 }
 
@@ -123,6 +126,9 @@ void os_printf(
             break;
         case 's':
             PrvPrintString(*(char**)argument);
+            break;
+        case 'c':
+            PrvPrintChar(*(char*)argument);
             break;
         }
     }

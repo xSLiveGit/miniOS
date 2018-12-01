@@ -3,6 +3,7 @@
 
 #include "osrt.h"
 
+#pragma pack(push, 1)
 typedef struct _TRAP_FRAME_64
 {
     uint64_t Rax;      
@@ -22,6 +23,7 @@ typedef struct _TRAP_FRAME_64
     uint64_t R14;      
     uint64_t R15;      
 } _TRAP_FRAME_64, *PTRAP_FRAME_64;
+#pragma pack(pop)
 
 void TrapFrame64Dump(PTRAP_FRAME_64 TrapFrame);
 

@@ -1,3 +1,4 @@
+
 %macro COMPLETE_TRAPGRAME_FIELDS 1
     mov [%1 + TRAP_FRAME.Rax], rax
     mov [%1 + TRAP_FRAME.Rbx], rbx

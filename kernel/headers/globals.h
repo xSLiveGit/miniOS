@@ -3,6 +3,7 @@
 
 #include "screen.h"
 #include "interupts.h"
+#include "os_keyboard.h"
 
 #define MAX(a,b) (a) > (b) ? (a) : (b)
 #define MIN(a,b) (a) < (b) ? (a) : (b)
@@ -13,6 +14,7 @@ typedef struct _GLOBALS
     SCREEN_BUFFER   ScreenBuffer;
     IDT             Idt;
     IDT_INFO        IdtDescriptr;
+    KEYBOARD_INFO   KeyboardInfo;
 } GLOBALS, *PGLOBALS;
 #pragma pack(pop)
 

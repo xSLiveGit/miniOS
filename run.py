@@ -44,7 +44,7 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
     binaryDirPath   = os.path.join(KernelPathDirectory, 'bin')
     headersDirPath  = os.path.join(KernelPathDirectory, 'headers')
     sourcesDirPath  = os.path.join(KernelPathDirectory, 'sources')
-    asmIncludesPath = os.path.join(KernelPathDirectory, 'asm', 'includes') + '\\'
+    asmIncludesPath = os.path.join(KernelPathDirectory, 'asm', 'include')  + '\\'
     obj             = os.path.join(binaryDirPath, "kernel.bin")
     lnk = ''
 
@@ -58,7 +58,7 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
             # print('src: {%s} output: {%s} asmo: {%s}'%(src, output, asmo))
 
             if f.endswith('.asm'):
-                cmd = 'nasm -I "' + asmIncludesPath + '" -f elf64 -O0 -o "' + output + '" "' + src + '"'
+                cmd = 'nasm -I ' + asmIncludesPath + ' -f elf64 -O0 -o "' + output + '" "' + src + '"'
                 os.system(cmd)
 
             elif f.endswith('.c'):
