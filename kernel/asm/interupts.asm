@@ -4,28 +4,38 @@
 %include "utils.inc"
 %include "keyboard.inc"
 
-GLOBAL _IntAsmBasic
-GLOBAL _IntAsmCritical
-GLOBAL _IntAsmIsrKeyboard
 
-extern IsrCritical;
-extern IsrKeyboard
+
+GLOBAL _IntAsmIsrBasic
 extern IsrBasic
-
-
-; void IntAsmBasic(void)
-_IntAsmBasic:
+; void _IntAsmIsrBasic(void)
+_IntAsmIsrBasic:
 	call IsrBasic
 	iretq 
 
 
-; void IntAsmCritical(void)
-_IntAsmCritical:
+
+GLOBAL _IntAsmIsrCritical
+extern IsrCritical;
+; void _IntAsmIsrCritical(void)
+_IntAsmIsrCritical:
 	call IsrCritical
 	iretq
 
 
-; void IntAsmIsrKeyboard(void)
+
+GLOBAL _IntAsmIsrKeyboard
+extern IsrKeyboard
+; void _IntAsmIsrKeyboard(void)
 _IntAsmIsrKeyboard:
 	call IsrKeyboard
+	iretq
+
+
+
+GLOBAL _IntAsmIsrTimer
+extern IsrTimer;
+; void _IntAsmIsrTimer(void)
+_IntAsmIsrTimer:
+	call IsrTimer
 	iretq

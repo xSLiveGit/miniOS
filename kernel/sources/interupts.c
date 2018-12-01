@@ -3,6 +3,7 @@
 #include "osrt.h"
 #include "os_keyboard.h"
 #include "pic.h"
+#include "os_timer.h"
 
 void IntPrvFillIdt(PIDT Idt);
 
@@ -59,9 +60,10 @@ IntInitializeIdt(
     os_printf("Idt addr: %x\n", Idt);
     os_printf("Idt descritpr addr: %x\n", IdtDescriptor);
     IntRemapPic();
+    TimerInit();
     // IntInitPic();
 
-    DebugBreak();
+    __debugbreak();
     __cli();
     __lidt(IdtDescriptor); //extern void IntAsmLidt(PIDT_INFO);
     __sti();
@@ -78,14 +80,15 @@ void IntPrvFillIdt(PIDT Idt)
 {
     for(size_t i=0; i< IDT_NO_CRITICAL_ENTRIES; i++)
     {
-        IntIdtFillEntry(&(Idt->Entries[i]), &_IntAsmCritical);
+        IntIdtFillEntry(&(Idt->Entries[i]), &_IntAsmIsrCritical);
     }
 
     for(size_t i=IDT_NO_CRITICAL_ENTRIES; i<IDT_NO_ENTRIES; i++)
     {
-        IntIdtFillEntry(&(Idt->Entries[i]), &_IntAsmBasic);
+        IntIdtFillEntry(&(Idt->Entries[i]), &_IntAsmIsrBasic);
     }
         
+    IntIdtFillEntry(&(Idt->Entries[32]), &_IntAsmIsrTimer);
     IntIdtFillEntry(&(Idt->Entries[33]), &_IntAsmIsrKeyboard);
 }
 
@@ -112,7 +115,6 @@ void IsrCritical(void)
     TrapFrame64Dump(&frame);
 
     __outb(PIC_MASTER_CTRL, PIC_EOI);
-    
     __hlt();
 
     __sti();
