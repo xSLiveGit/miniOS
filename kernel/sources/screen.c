@@ -156,7 +156,6 @@ void ScrRemoveCharFromCurrentLine(
         return;
     }
 
-
     ScreenBuffer->Columns--;
     ScreenBuffer->IdxInColumn--;
     ScrWriteInBuffer(ScreenBuffer, ' ');

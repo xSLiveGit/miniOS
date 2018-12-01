@@ -2,6 +2,7 @@
 #include "screen.h"
 #include "osrt.h"
 #include "pic.h"
+#include "os_console.h"
 
 static const char key_range1_0[]    = "1234567890";
 static const char key_rangeQ_P[]    = "qwertyuiop";
@@ -120,7 +121,8 @@ void IsrKeyboardKeyHandler(uint8_t Code)
     }
     else if(KbPrvIsEnter(Code))
     {
-        chr = '\n';
+        CslEntr(&(gEnviroment.Console));
+        return;
     }
     else if(KbPrvIsSpace(Code))
     {
@@ -133,13 +135,15 @@ void IsrKeyboardKeyHandler(uint8_t Code)
     }
     else if(Code == 0xE)//Back space
     {
-        ScrRemoveCharFromCurrentLine(&gEnviroment.ScreenBuffer);
+        // ScrRemoveCharFromCurrentLine(&gEnviroment.ScreenBuffer);
+        CslBackSpace(&(gEnviroment.Console));
         return;
     }
 
     if(chr != 0)
     {
-        os_printf("%c", chr);
+        CslWriteChr(&(gEnviroment.Console), chr);
+        // os_printf("%c", chr);
     }
     else    //not handled
     {

@@ -1,5 +1,6 @@
 #include "osrt.h"
 #include "os_string.h"
+#include "os_console.h"
 
 //trus means success
 bool InitEnviroment()
@@ -25,6 +26,22 @@ void os_memset(
         *start++ = Byte;
     }
 }
+
+void os_memcpy(
+    void*   Destionation, 
+    void*   Source, 
+    size_t  Size
+)
+{
+    uint8_t* destination = (uint8_t*)Destionation;
+    uint8_t* source =  (uint8_t*)Source;
+
+    for(size_t i=0; i<Size; i++)
+    {
+        destination[i] = source[i];
+    }       
+}
+
 
 char PrvHexdigitToChar(
     uint8_t Hexdigit
