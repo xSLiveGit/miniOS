@@ -22,6 +22,7 @@ void TimerInit(void)
 void IsrTimer(void)
 {
     __cli();
+
     __interlock_increment_uint64t(&gTickCount);
     __outb(PIC_MASTER_CTRL, PIC_EOI);
 

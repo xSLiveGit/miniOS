@@ -1,9 +1,10 @@
 #include "os_console.h"
 #include "osrt.h"
 
+
 void CslInit(PCONSOLE Console)
 {
-    os_memset(Console, sizeof(Console), 0);
+    os_memset(Console, sizeof(*Console), 0);
     os_memcpy(Console->Buffer, CONSOLE_PREFIX, CONSOLE_PREFIX_SIZE);
     Console->BufferIdx = CONSOLE_START_IDX;
     os_printf("\n%s", Console->Buffer);
@@ -32,12 +33,14 @@ void CslBackSpace(PCONSOLE Console)
 }
 
 void CslEntr(PCONSOLE Console)
-{
-    CslInterpretCmd(Console->Buffer + CONSOLE_START_IDX);
+{ 
+    if(Console->BufferIdx > CONSOLE_START_IDX)
+    {
+        os_printf("\n");
+        CslInterpretCmd(Console->Buffer + CONSOLE_START_IDX);
+    }
+    
     CslInit(Console);
 }
 
-void CslInterpretCmd(char* Command)
-{
-    os_printf("Command was: %s", Command);
-}
+
