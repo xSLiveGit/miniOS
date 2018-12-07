@@ -24,8 +24,8 @@ DskExecuteStageOne(
     //Sector Count
     __outb(DSK_REGISTER_SECTOR_COUNT, 1); // 1 sector
     __outb(DSK_REGISTER_SECTOR_NUMBER, Sector);
-    __outb(DSK_REGISTER_CYLINDER_LOW, ((uint8_t*)&Cylinder)[0]);
-    __outb(DSK_REGISTER_CYLINDER_HIGH, ((uint8_t*)&Cylinder)[1]);
+    __outb(DSK_REGISTER_CYLINDER_LOW, ((uint8_t*)&Cylinder)[1]);
+    __outb(DSK_REGISTER_CYLINDER_HIGH, ((uint8_t*)&Cylinder)[0]);
     __outb(DSK_REGISTER_DRIVER_HEADER, (Head | 10100000)); //Master DRV | CHS mode 
 }
 
@@ -37,18 +37,26 @@ DskRead(
     , uint8_t*  BufferOf512
 )
 {
-    DskExecuteStageOne(Head, Cylinder, Sector);
-    __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_READ);
-    
-    __debugbreak();
-    while(true)
-    {
+    DiskIOSector(Cylinder, Sector, Head, BufferOf512, DSK_COMMAND_READ);
+    DiskReadBuffer(Cylinder, Sector, Head, BufferOf512);
+
+    // __dsk_read_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
+
+
+
+    // DskExecuteStageOne(Head, Cylinder, Sector);
+
+    // __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_READ);
+    // while(true)
+    // {
         
-        uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
-        if(retVal & 0b10000000)
-            break;
-    }
-    __dsk_read_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
+    //     uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
+    //     if(retVal & 8)
+    //         break;
+    // }
+
+    // __debugbreak();
+    // __dsk_read_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
 
     return DSK_STATUS_SUCCESS;
 }
@@ -61,18 +69,22 @@ DskWrite(
     , uint8_t*  BufferOf512
 )
 {
-    DskExecuteStageOne(Head, Cylinder, Sector);
-    __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_WRITE);
+
+    DiskIOSector(Cylinder, Sector, Head, BufferOf512, DSK_COMMAND_WRITE);
+    DiskWriteBuffer(Cylinder, Sector, Head, BufferOf512);
+
+    // DskExecuteStageOne(Head, Cylinder, Sector);
+    // __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_WRITE);
     
-    __debugbreak();
-    while(true)
-    {
-        uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
-        if(retVal & 0b10000000)
-            break;
-    }
+    // __debugbreak();
+    // while(true)
+    // {
+    //     uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
+    //     if(retVal & 8)
+    //         break;
+    // }
     
-    __dsk_write_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
+    // __dsk_write_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
 
     return DSK_STATUS_SUCCESS;
 }

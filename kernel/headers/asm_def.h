@@ -34,5 +34,29 @@ extern void __interlock_increment_int16t(int16_t*);
 extern void __interlock_increment_uint8t(uint8_t*);
 extern void __interlock_increment_int8t(int8_t*);
 
+extern void DiskReadBuffer(
+    uint16_t Cylinder, 
+    uint8_t SectorIndex, 
+    uint8_t Head, 
+    uint8_t* InputBuffer
+);
+
+extern void DiskWriteBuffer(
+    uint16_t Cylinder, 
+    uint8_t SectorIndex,
+    uint8_t Head, 
+    uint8_t* InputBuffer
+    );
+
+
+extern void DiskIOSector(
+    uint16_t Cylinder, 
+    uint8_t SectorIndex, 
+    uint8_t Head, 
+    uint8_t* OutputBuffer, 
+    uint8_t Command
+    );
+
+
 
 #endif //!_ASM_DEF_H_
