@@ -6,6 +6,7 @@ PATH_BINARY_FILE = os.path.join(os.getcwd(), 'bin', 'os.bin')
 PATH_KERNEL = os.path.join(os.getcwd(), 'kernel')
 PATH_CFG = os.path.join(os.getcwd(), 'cfg', 'os.bxrc')
 FLOPPY_SIZE = 1474560
+DISK_SIZE = 33554432  # 32 mb is enough...
 
 def AddPadding(Path, TotalSize):
 
@@ -98,6 +99,6 @@ def Run():
 if __name__ == "__main__":
     BuildBinFromAsm(PATH_ASM_DIR, PATH_BINARY_FILE)
     LoadKernel(PATH_KERNEL, PATH_BINARY_FILE)
-    AddPadding(PATH_BINARY_FILE, FLOPPY_SIZE)
+    AddPadding(PATH_BINARY_FILE, DISK_SIZE)
     Run()
     

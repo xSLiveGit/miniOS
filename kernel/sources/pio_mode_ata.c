@@ -22,11 +22,11 @@ DskExecuteStageOne(
 )
 {
     //Sector Count
-    __outb(DSK_REGISTER_DRIVER_HEADER, (Head | 10100000)); //Master DRV | CHS mode 
     __outb(DSK_REGISTER_SECTOR_COUNT, 1); // 1 sector
     __outb(DSK_REGISTER_SECTOR_NUMBER, Sector);
     __outb(DSK_REGISTER_CYLINDER_LOW, ((uint8_t*)&Cylinder)[0]);
     __outb(DSK_REGISTER_CYLINDER_HIGH, ((uint8_t*)&Cylinder)[1]);
+    __outb(DSK_REGISTER_DRIVER_HEADER, (Head | 10100000)); //Master DRV | CHS mode 
 }
 
 DSK_STATUS 
@@ -39,7 +39,15 @@ DskRead(
 {
     DskExecuteStageOne(Head, Cylinder, Sector);
     __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_READ);
-    while(!(__inb(DSK_REGISTER_COMMAND) & (1 << 8))); //wait response for command
+    
+    __debugbreak();
+    while(true)
+    {
+        
+        uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
+        if(retVal & 0b10000000)
+            break;
+    }
     __dsk_read_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
 
     return DSK_STATUS_SUCCESS;
@@ -55,7 +63,15 @@ DskWrite(
 {
     DskExecuteStageOne(Head, Cylinder, Sector);
     __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_WRITE);
-    while(!(__inb(DSK_REGISTER_COMMAND) & (1 << 8))); //wait response for command
+    
+    __debugbreak();
+    while(true)
+    {
+        uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
+        if(retVal & 0b10000000)
+            break;
+    }
+    
     __dsk_write_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
 
     return DSK_STATUS_SUCCESS;
