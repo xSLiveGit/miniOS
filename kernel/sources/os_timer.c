@@ -7,7 +7,7 @@ uint64_t gTickCount;
 
 void TimerInit(void)
 {
-    uint32_t desiredFreq = 1000;
+    uint32_t desiredFreq = 100;
     uint32_t timerBaseFreq = 1193180;  //Magic value from https://wiki.osdev.org/Programmable_Interval_Timer :) 
     uint16_t divisor = timerBaseFreq / desiredFreq;
 

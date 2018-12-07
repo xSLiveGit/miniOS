@@ -65,6 +65,59 @@ __inb:
     ret
 
 
+GLOBAL __dsk_read_byte_string
+; void __dsk_read_byte_string(uint64_t NoBytesToRead, uint64_t PortToRead, uint8_t* Buffer); 
+__dsk_read_byte_string:
+; NoWordToRead - Rcx 
+; PortToRead - Rdx
+; Buffer - R8
+    push rsi
+    mov rsi, r8
+    rep insb
+    pop rsi
+    ret
+
+
+GLOBAL __dsk_read_word_string
+; void __dsk_read_word_string(uint64_t NoWordToRead, uint64_t PortToRead, uint16_t* Buffer); 
+__dsk_read_word_string:
+; NoWordToRead - Rcx 
+; PortToRead - Rdx
+; Buffer - R8
+    push rsi
+    mov rsi, r8
+    rep insw
+    pop rsi
+    ret
+
+
+GLOBAL __dsk_write_byte_string
+; void __dsk_write_byte_string(uint64_t NoBytesToWrite, uint64_t PortToWrute, uint8_t* Buffer); 
+__dsk_write_byte_string:
+; NoBytesToWrite - Rcx 
+; PortToWrute - Rdx
+; Buffer - R8
+    push rsi
+    mov rsi, r8
+    rep outsb
+    pop rsi
+    ret
+
+
+GLOBAL __dsk_write_word_string
+; void __dsk_write_word_string(uint64_t NoWordToWrite, uint64_t PortToWrute, uint16_t* Buffer); 
+__dsk_write_word_string:
+; NoWordToWrite - Rcx 
+; PortToWrute - Rdx
+; Buffer - R8
+    push rsi
+    mov rsi, r8
+    rep outsw
+    pop rsi
+    ret
+
+
+
 GLOBAL __interlock_increment_uint64t
 ; void __interlock_increment_uint64t(uint64t*)
 __interlock_increment_uint64t:

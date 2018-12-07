@@ -9,14 +9,14 @@ void _HandlePrintHelpCmd()
     os_printf("Help:\n");
     os_printf("\t %s - help\n", CSL_COMMAND_HELP);
     os_printf("\t %s - Dump trapframe with current ctx\n", CSL_COMMAND_DUMP_TRAPFRAME);
-    os_printf("\t %s - Use timer to sleep 5 seconds\n", CSL_COMMAND_DUMP_TIMER);
+    os_printf("\t %s - Use timer to sleep 3 seconds\n", CSL_COMMAND_DUMP_TIMER);
     os_printf("\t %s - Divide by zero: \n", CSL_COMMAND_DIVISION_BY_ZERO);
 }
 
 void _HandleTimeoutCmd()
 {
-    os_printf("I will wait for 5 secounds\n");
-    TimerSleep(100);
+    os_printf("I will wait for 3 secounds\n");
+    TimerSleep(3000);
     os_printf("Timeout :)\n");
 }
 

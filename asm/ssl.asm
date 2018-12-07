@@ -18,26 +18,16 @@ extern KernelStub
 [org ORIGIN_SSL]
 
 SSLEntryPoint:
-    ;/************************************************************
-    ; *                     print a message
-    ; ************************************************************/
-  
+
     mov si, msg
     call StartPrint
 
-
-    ;/***********************************************
-    ;*                  Install GDT
-    ;************************************************/
     call InstallGDT
 
     mov si, msg_GdtSuccess
     call    StartPrint 
 
-    ;-------------------------------;
-	;   Go into pmode		;
-	;-------------------------------;
-
+	;   Go into pmode	;
 	cli				    ; clear interrupts
 	mov	eax, cr0		; set bit 0 in cr0--enter pmode
 	or	eax, 1
@@ -161,11 +151,6 @@ Gdt32:
 ;******************************************************
 [bits 32]
 PMode32:
-  
-	;-------------------------------;
-	;   Set registers		;
-	;-------------------------------;
-    
     mov eax, FIELD_OFFSET(Gdt32, Gdt32.data_descriptor)
     mov ds, ax
     mov ss, ax 
@@ -178,9 +163,7 @@ PMode32:
     mov edi, ORIGIN_BASE_KERNEL
     mov ecx, 512 * 30 ;because we load 40 sectors
     cld 
-    break
     rep movsb
-    break
 
     ; disable pagination
     mov eax, cr0
@@ -238,8 +221,6 @@ PMode32:
     or eax, 1 << 5               ; Set the PAE-bit, which is the 6th bit (bit 5).
     mov cr4, eax                 ; Set control register 4 to the A-register.
 
-    ;;de ce trebuie intai compatibility mode si apoi pagin/protected mode???
-
     ; enable  compatibility mode
     mov ecx, 0xC0000080       ; Set the C-register to 0xC0000080, which is the IA32_EFER MSR.
     rdmsr
@@ -258,7 +239,6 @@ PMode32:
 ; /**********************************************************************/
 ; /*                                GDT 64                              */
 ; /**********************************************************************/
-
 Gdt64:
     .null: 
         ISTRUC GlobalDescriptorTableEntry
@@ -292,12 +272,8 @@ Gdt64:
         dq Gdt64                     ; Base.
     .end: 
 
-; Use 64-bit.
-;******************************************************
-;	                    Long mode
-;******************************************************
+; Long mode
 [BITS 64]
- 
 Realm64:
     cli                           ; Clear the interrupt flag.
     mov ax, FIELD_OFFSET(Gdt64, Gdt64.data_descriptor)            ; Set the A-register to the data descriptor.
@@ -320,14 +296,11 @@ Realm64:
     add rax, 40000000h
     call rax
     cli;
-    break
-    break
     mov rax, ORIGIN_BASE_KERNEL
     ; add rax, 8000000000h ; test big addresses
 	call rax
 
 TestPaginationRoutine:
-    ; break
     ret
 
 times 499 - ($-$$) db 0
