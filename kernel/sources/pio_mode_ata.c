@@ -15,18 +15,26 @@
 #define DSK_COMMAND_WRITE 0x30
 
 void 
-DskExecuteStageOne(
+DskExecuteCommandPrologue(
     uint8_t     Head, 
     uint16_t    Cylinder, 
-    uint8_t     Sector
+    uint8_t     Sector,
+    uint8_t     Command
 )
 {
     //Sector Count
+    __outb(DSK_REGISTER_DRIVER_HEADER, (Head | 0b10100000)); //Master DRV | CHS mode 
     __outb(DSK_REGISTER_SECTOR_COUNT, 1); // 1 sector
     __outb(DSK_REGISTER_SECTOR_NUMBER, Sector);
-    __outb(DSK_REGISTER_CYLINDER_LOW, ((uint8_t*)&Cylinder)[1]);
-    __outb(DSK_REGISTER_CYLINDER_HIGH, ((uint8_t*)&Cylinder)[0]);
-    __outb(DSK_REGISTER_DRIVER_HEADER, (Head | 10100000)); //Master DRV | CHS mode 
+    __outb(DSK_REGISTER_CYLINDER_LOW, ((uint8_t*)&Cylinder)[0]);
+    __outb(DSK_REGISTER_CYLINDER_HIGH, ((uint8_t*)&Cylinder)[1]);
+    __outb(DSK_REGISTER_COMMAND, Command);
+    while(true)
+    {
+        uint8_t retVal = __inb(DSK_REGISTER_COMMAND);//wait for DRQ
+        if(retVal & 8)
+            break;
+    }
 }
 
 DSK_STATUS 
@@ -37,27 +45,8 @@ DskRead(
     , uint8_t*  BufferOf512
 )
 {
-    DiskIOSector(Cylinder, Sector, Head, BufferOf512, DSK_COMMAND_READ);
-    DiskReadBuffer(Cylinder, Sector, Head, BufferOf512);
-
-    // __dsk_read_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
-
-
-
-    // DskExecuteStageOne(Head, Cylinder, Sector);
-
-    // __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_READ);
-    // while(true)
-    // {
-        
-    //     uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
-    //     if(retVal & 8)
-    //         break;
-    // }
-
-    // __debugbreak();
-    // __dsk_read_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
-
+    DskExecuteCommandPrologue(Head, Cylinder, Sector, DSK_COMMAND_READ);
+    __dsk_read_sector(BufferOf512);
     return DSK_STATUS_SUCCESS;
 }
 
@@ -69,14 +58,18 @@ DskWrite(
     , uint8_t*  BufferOf512
 )
 {
-
-    DiskIOSector(Cylinder, Sector, Head, BufferOf512, DSK_COMMAND_WRITE);
-    DiskWriteBuffer(Cylinder, Sector, Head, BufferOf512);
-
-    // DskExecuteStageOne(Head, Cylinder, Sector);
-    // __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_WRITE);
-    
+    // DiskWriteSector(Cylinder, Sector, Head, BufferOf512);
     // __debugbreak();
+    // DiskIOSector(Cylinder, Sector, Head, BufferOf512, DSK_COMMAND_WRITE);
+    // DiskWriteBuffer(Cylinder, Sector, Head, BufferOf512);
+
+    // __debugbreak();
+    DskExecuteCommandPrologue(Head, Cylinder, Sector, DSK_COMMAND_WRITE);
+    __dsk_write_sector(BufferOf512);
+
+    // os_printf("Cmd\n");
+    // __debugbreak();
+    // __outb(DSK_REGISTER_COMMAND, DSK_COMMAND_WRITE);
     // while(true)
     // {
     //     uint8_t retVal = __inb(DSK_REGISTER_COMMAND);
@@ -84,7 +77,12 @@ DskWrite(
     //         break;
     // }
     
-    // __dsk_write_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);
+
+    // // __debugbreak();
+    // DiskWriteBuffer(Cylinder, Sector, Head, BufferOf512);
+    // os_printf("A recut de DiskWriteBuffer\n");
+    // // os_printf("A trecut de IO Sector\n");
+    // // __dsk_write_byte_string(SECTOR_SIZE, DSK_REGISTER_DATA, BufferOf512);//asta pare ok
 
     return DSK_STATUS_SUCCESS;
 }

@@ -15,11 +15,6 @@ extern void __lidt(void*);
 extern void __outb(uint16_t Port, uint8_t Data);
 extern uint8_t __inb(uint16_t Port);
 
-extern void __dsk_read_byte_string(uint64_t NoBytesToRead, uint64_t PortToRead, uint8_t* Buffer); 
-extern void __dsk_read_word_string(uint64_t NoWordsToRead, uint64_t PortToRead, uint16_t* Buffer); 
-extern void __dsk_write_byte_string(uint64_t NoBytesToWrite, uint64_t PortToWrite, uint8_t* Buffer); 
-extern void __dsk_write_word_string(uint64_t NoWordsToWrite, uint64_t PortToWrite, uint16_t* Buffer); 
-
 extern void _IntAsmIsrCritical(void);
 extern void _IntAsmIsrBasic(void);
 extern void _IntAsmIsrKeyboard(void);
@@ -34,28 +29,8 @@ extern void __interlock_increment_int16t(int16_t*);
 extern void __interlock_increment_uint8t(uint8_t*);
 extern void __interlock_increment_int8t(int8_t*);
 
-extern void DiskReadBuffer(
-    uint16_t Cylinder, 
-    uint8_t SectorIndex, 
-    uint8_t Head, 
-    uint8_t* InputBuffer
-);
-
-extern void DiskWriteBuffer(
-    uint16_t Cylinder, 
-    uint8_t SectorIndex,
-    uint8_t Head, 
-    uint8_t* InputBuffer
-    );
-
-
-extern void DiskIOSector(
-    uint16_t Cylinder, 
-    uint8_t SectorIndex, 
-    uint8_t Head, 
-    uint8_t* OutputBuffer, 
-    uint8_t Command
-    );
+extern void __dsk_read_sector(uint8_t* Buffer);
+extern void __dsk_write_sector(uint8_t* Buffer);
 
 
 

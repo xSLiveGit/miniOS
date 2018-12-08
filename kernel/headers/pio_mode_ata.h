@@ -8,10 +8,11 @@
 
 #define DRIVE_HEAD_REGISTER 0x1F6
 
-void DskExecuteStageOne(
+void DskExecuteCommandPrologue(
     uint8_t     Head, 
     uint16_t    Cylinder, 
-    uint8_t     Sector
+    uint8_t     Sector,
+    uint8_t     Command
 );
 
 DSK_STATUS DskRead(
