@@ -51,14 +51,13 @@ IntInitializeIdt(
 )
 {
     os_printf("Initializez pic-ul");
-
     IdtDescriptor->IdtBase = Idt;
     IdtDescriptor->IdtSize = sizeof(*Idt) - 1;
-
     IntPrvFillIdt(Idt);
     
     os_printf("Idt addr: %x\n", Idt);
     os_printf("Idt descritpr addr: %x\n", IdtDescriptor);
+    
     IntRemapPic();
     TimerInit();
     // IntInitPic();

@@ -1,5 +1,6 @@
 %include "utils.inc"
 
+[Bits 64]
 GLOBAL __debugbreak
 ; void __debugbreak(void)
 __debugbreak:
@@ -11,7 +12,7 @@ __debugbreak:
     pop rbp
     ret
 
-
+[Bits 64]
 GLOBAL __hlt
 ; void __hlt(void)
 __hlt:
@@ -27,6 +28,7 @@ __hlt:
 	ret 
 
 
+[Bits 64]
 GLOBAL __sti
 ; void __sti(void);
 __sti:
@@ -34,6 +36,7 @@ __sti:
     ret
 
 
+[Bits 64]
 GLOBAL __cli
 ; void __cli(void);
 __cli:
@@ -41,6 +44,7 @@ __cli:
     ret
 
 
+[Bits 64]
 GLOBAL __lidt
 ; void __lidt(PVOID)
 __lidt:

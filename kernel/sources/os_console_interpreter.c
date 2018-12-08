@@ -15,9 +15,10 @@ void _HandlePrintHelpCmd()
 
 void _HandleTimeoutCmd()
 {
-    os_printf("I will wait for 3 secounds\n");
-    TimerSleep(3000);
+    os_printf("I will wait for 0.3 secounds\n");
+    TimerSleep(300);
     os_printf("Timeout :)\n");
+    __debugbreak();
 }
 
 void _HandleTrapframeCmd()

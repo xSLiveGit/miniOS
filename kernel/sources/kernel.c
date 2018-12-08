@@ -39,7 +39,7 @@ int main(void)
     os_printf("\n");
 
     os_printf("I will wait for 3 secounds\n");
-    TimerSleep(3000);
+    // TimerSleep(3000);
     os_printf("Timeout :)\n");
 
     __debugbreak();
