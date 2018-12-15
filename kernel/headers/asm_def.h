@@ -20,14 +20,14 @@ extern void _IntAsmIsrBasic(void);
 extern void _IntAsmIsrKeyboard(void);
 extern void _IntAsmIsrTimer(void);
 
-extern void __interlock_increment_uint64t(uint64_t*);
-extern void __interlock_increment_int64t(int64_t*);
-extern void __interlock_increment_uint32t(uint32_t*);
-extern void __interlock_increment_int32t(int32_t*);
-extern void __interlock_increment_uint16t(uint16_t*);
-extern void __interlock_increment_int16t(int16_t*);
-extern void __interlock_increment_uint8t(uint8_t*);
-extern void __interlock_increment_int8t(int8_t*);
+extern void __interlock_increment_uint64t(volatile uint64_t*);
+extern void __interlock_increment_int64t(volatile int64_t*);
+extern void __interlock_increment_uint32t(volatile uint32_t*);
+extern void __interlock_increment_int32t(volatile int32_t*);
+extern void __interlock_increment_uint16t(volatile uint16_t*);
+extern void __interlock_increment_int16t(volatile int16_t*);
+extern void __interlock_increment_uint8t(volatile uint8_t*);
+extern void __interlock_increment_int8t(volatile int8_t*);
 
 extern void __dsk_read_sector(uint8_t* Buffer);
 extern void __dsk_write_sector(uint8_t* Buffer);

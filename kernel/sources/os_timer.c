@@ -4,12 +4,10 @@
 #include "types.h"
 #include "osrt.h"
 
-uint64_t gTickCount;
-bool dumpTickCount;
+static volatile uint32_t gTickCount;
 
 void TimerInit(void)
 {
-    dumpTickCount = false;
     uint32_t desiredFreq = 100;
     uint32_t timerBaseFreq = 1193180;  //Magic value from https://wiki.osdev.org/Programmable_Interval_Timer :) 
     uint16_t divisor = timerBaseFreq / desiredFreq;
@@ -26,48 +24,41 @@ void IsrTimer(void)
 {
     __cli();
 
-    __interlock_increment_uint64t(&gTickCount);
+    __interlock_increment_uint32t(&gTickCount);
     __outb(PIC_MASTER_CTRL, PIC_EOI);
 
-    if(dumpTickCount)
-        os_printf("IsrTime was called. New tickCountValue is: { %x }\n", gTickCount);
     __sti();
 }
 
-uint64_t TimerGetTickCount(void)
+uint32_t TimerGetTickCount(void)
 {
     return gTickCount;
 }
 
-void TimerSleep(uint64_t Milliseconds)
+void TimerSleep(uint32_t Milliseconds)
 {
-    os_printf("TimerSleep\n");
-    dumpTickCount = true;
-    __debugbreak();
-    uint64_t intialTimerTickCount = TimerGetTickCount();
-    uint64_t period = 100;
-    // os_printf(  
-    //     "Initial tick count:{ %x } and miliseconds: { %x } \n", 
-    //     intialTimerTickCount, 
-    //     Milliseconds
-    // );
+    os_printf("TimerSleep milisec: {%x} \n", Milliseconds);
+    volatile uint32_t intialTimerTickCount = 0;
+    volatile uint32_t currentTickCout = 0; 
+    volatile uint32_t dif = 0;
     
+    intialTimerTickCount = TimerGetTickCount();
+    currentTickCout = TimerGetTickCount();
+    dif = (currentTickCout - intialTimerTickCount);
+
     while(true)
     {
-        uint64_t currentTickCout = TimerGetTickCount();
-        period--;
-        if(period == 0)
+        currentTickCout = TimerGetTickCount();
+        dif = (currentTickCout - intialTimerTickCount); 
+        if(dif > Milliseconds)
         {
-            os_printf("Initi tick: { %x } New tick:  { %x }\n", intialTimerTickCount, currentTickCout);
-            period = 100;
-            __debugbreak();
-        }
-        // os_printf("Current tick count:{ %x } \n", currentTickCout);
-        if((currentTickCout - intialTimerTickCount) > Milliseconds)
-        {
+            os_printf(
+                "init tck: {%x}, current tck: {%x} dif: {%x}\n", 
+                intialTimerTickCount, 
+                currentTickCout,
+                dif
+            );
             break;
         }
     }
-
-    dumpTickCount = false;
 }

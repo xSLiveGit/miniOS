@@ -105,8 +105,8 @@ char KbPrvGetCharFromLetterCode(uint8_t Code)
 void IsrKeyboardKeyHandler(uint8_t Code)
 {
     char chr = 0; //init with null
-	
-    if (!KbPrvIsKeyPressed(Code))
+
+    if (!KbPrvIsKeyPressed(Code) || (false == CslAcceptCommans()))
 	{
 		return;
 	}

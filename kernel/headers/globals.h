@@ -16,6 +16,7 @@ typedef struct _GLOBALS
     IDT             Idt;
     IDT_INFO        IdtDescriptr;
     KEYBOARD_INFO   KeyboardInfo;
+    bool            AcceptCmds;
     CONSOLE         Console;             
 } GLOBALS, *PGLOBALS;
 #pragma pack(pop)

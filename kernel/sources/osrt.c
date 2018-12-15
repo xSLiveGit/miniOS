@@ -2,6 +2,7 @@
 #include "os_string.h"
 #include "os_console.h"
 
+
 //trus means success
 bool InitEnviroment()
 {

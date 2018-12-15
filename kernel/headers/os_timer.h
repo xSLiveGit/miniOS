@@ -9,7 +9,7 @@
 void IsrTimer(void);
 void TimerInit(void);
 
-uint64_t TimerGetTickCount(void);
-void TimerSleep(uint64_t);
+uint32_t TimerGetTickCount(void);
+void TimerSleep(uint32_t);
 
 #endif // _OS_TIMER_H_

@@ -4,6 +4,7 @@
 #include "types.h"
 //#include "os_utils.h"
 
+
 #define MAX_LINES       25
 #define MAX_COLUMNS     80
 #define MAX_OFFSET      25 * 80
