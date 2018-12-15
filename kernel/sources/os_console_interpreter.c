@@ -3,6 +3,7 @@
 #include "trapframe.h"
 #include "os_string.h"
 #include "os_timer.h"
+#include "os_memory.h"
 
 void _HandlePrintHelpCmd()
 {
@@ -11,6 +12,7 @@ void _HandlePrintHelpCmd()
     os_printf("\t %s - Dump trapframe with current ctx\n", CSL_COMMAND_DUMP_TRAPFRAME);
     os_printf("\t %s - Use timer to sleep 3 seconds\n", CSL_COMMAND_DUMP_TIMER);
     os_printf("\t %s - Divide by zero: \n", CSL_COMMAND_DIVISION_BY_ZERO);
+    os_printf("\t %s - Heap scenario 1: \n", CSL_COMMAND_HEAP_SCENARIO_1);
 }
 
 void _HandleTimeoutCmd()
@@ -34,6 +36,25 @@ void _HandleDivisionByZero()
     os_printf("No result: %d", result);//due compiler
 }
 
+void _HandleHeapScenario1()
+{
+    char heapMsg[] = "Am scris ceva in heap";
+    void* mmPage = MmAllocPage();
+    if(NULL == mmPage)
+    {
+        os_printf("MmAllocPage returned nullptr");
+        return;
+    }
+
+    for(int i=0; i< sizeof(heapMsg); i++)
+    {
+        ((char*)mmPage)[i] = heapMsg[i];
+    }
+
+    os_printf("Allocated page: { %x }, Content: { %s }", mmPage, (char*)mmPage);
+    MmFreePage(mmPage);
+}
+
 void CslInterpretCmd(char* Command)
 {
     if(0 == os_strcmp(Command, CSL_COMMAND_HELP))
@@ -52,8 +73,13 @@ void CslInterpretCmd(char* Command)
     {
         _HandleDivisionByZero();
     }
+    else if(0 == os_strcmp(Command, CSL_COMMAND_HEAP_SCENARIO_1))
+    {
+        _HandleHeapScenario1();
+    }
     else
     {
         os_printf(" Wrong cmd. Use help\n");
     }
 }
+

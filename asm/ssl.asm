@@ -231,7 +231,7 @@ PMode32:
 
     ; Enable paging and protected mode
     mov eax, cr0                 ; Set the A-register to control register 0.
-    or eax, (1 << 31) | (1 << 0)     ; Set the PG-bit, which is the 31nd bit, and the PM-bit, which is the 0th bit.
+    or eax, (1 << 31) | (1 << 0) ; Set the PG-bit, which is the 31nd bit, and the PM-bit, which is the 0th bit.
     mov cr0, eax                 ; Set control register 0 to the A-register.
     
     jmp FIELD_OFFSET(Gdt64, Gdt64.code_descriptor):Realm64       ; Set the code segment and enter 64-bit long mode.

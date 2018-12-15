@@ -29,6 +29,9 @@ typedef uint32_t 	        addr_t;
 typedef int32_t 	        pid_t;
 typedef unsigned int        bool;
 
+#ifndef UINT8_MAX
+#define UINT8_MAX ((uint8_t)(-1))
+#endif
 
 #ifndef VOID
 #define VOID void
@@ -37,6 +40,10 @@ typedef unsigned int        bool;
 #ifndef PVOID
 #define PVOID VOID*
 #endif //!PVOID
+
+#ifndef NULL
+#define NULL 0
+#endif //! NULL
 
 
 #ifndef true

@@ -74,7 +74,7 @@ def LoadKernel(KernelPathDirectory, BinaryFilePath):
                 continue
             lnk += ' "' + output + '" '
     print('LNK: ' + str(lnk))
-    cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64'
+    cmd = 'c:\facultate\miniOS\tools\ld.exe -O0 -Ttext 0x110000 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64'
     # cmd = 'ld -O0 -Ttext 0x110000 -Tdata 0x150000 -Tbss 0x175000 --oformat binary -o "' + obj + '" ' + lnk + ' -m elf_x86_64 -nostdlib'
     # print('[INFO] ld cmd: %s'%(cmd))
     os.system(cmd)

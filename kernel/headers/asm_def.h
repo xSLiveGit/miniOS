@@ -32,6 +32,6 @@ extern void __interlock_increment_int8t(volatile int8_t*);
 extern void __dsk_read_sector(uint8_t* Buffer);
 extern void __dsk_write_sector(uint8_t* Buffer);
 
-
+extern void __invlpg(void* Address);
 
 #endif //!_ASM_DEF_H_

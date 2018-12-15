@@ -148,3 +148,10 @@ __dsk_read_sector:
 	rep insw
 	POP_A
 	ret
+
+GLOBAL __invlpg
+; void __invlpg(void* Address);
+__invlpg:
+; Rcx - Address
+	invlpg [rcx]	
+	ret
