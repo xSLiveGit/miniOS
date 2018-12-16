@@ -10,7 +10,7 @@
 #define PAGE_SIZE               4096
 #define HEAP_MAX_PAGES          64
 #define TABLE_ENTRIES_NUMBER    512
-#define HEAP_IDX_IN_PDT         2
+#define HEAP_IDX_IN_PDT         8
 
 void MmInit(void);
 void MmUninit(void);

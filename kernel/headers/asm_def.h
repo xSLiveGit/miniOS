@@ -33,5 +33,4 @@ extern void __dsk_read_sector(uint8_t* Buffer);
 extern void __dsk_write_sector(uint8_t* Buffer);
 
 extern void __invlpg(void* Address);
-
 #endif //!_ASM_DEF_H_

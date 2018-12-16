@@ -49,13 +49,16 @@ void _HandleHeapScenario1()
 
     os_printf("Allocated page: { %x }", mmPage);
     __debugbreak();
+    os_printf("Content is : {%d}", *((int*)mmPage));
     __debugbreak();
-    
-    for(int i=0; i< 2; i++)
+    __debugbreak();
+    *((int*)mmPage) = 1;
+
+    for(int i=0; i< sizeof(heapMsg); i++)
     {
         ((char*)mmPage)[i] = heapMsg[i];
     }
-
+    os_printf("Mm char is: {%s}", (char*)mmPage);
     os_printf("Allocated page: { %x }", mmPage);
     os_printf("o SA CURAT");
     MmFreePage(mmPage);
