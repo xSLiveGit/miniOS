@@ -38,16 +38,19 @@ void MmUninit(void)
 
 uint8_t MmReservePage(void)
 {
-    bool found = false;
+    os_printf("Will call MmReservePage\n");
 
     if(g_MemoryAvailable + 1 == 0)//no available pages
         return UINT8_MAX;
 
-    for(int i=0; ((i < HEAP_MAX_PAGES) && (!found)); i++)
+    os_printf("Pass 1st verification\n");
+
+    for(int i=0; i < HEAP_MAX_PAGES; i++)
     {
         if((g_MemoryAvailable & (1 << i)) == 0)
         {
-            found = true;
+            os_printf("try i {%d}",i);
+
             g_MemoryAvailable = (g_MemoryAvailable | (1 << i));
             return i;
         }
@@ -73,10 +76,16 @@ void MmFreeReservedPage(uint8_t PageIdx)
 void* MmAllocPage(void)
 {
     uint8_t reservedPageIdx = MmReservePage();
+    os_printf("MmReservePage call end\n");
+
     if(reservedPageIdx == UINT8_MAX)
     {
+        os_printf("return null\n");
         return NULL;
     }
+    uint64_t** heapPt = (uint64_t**)HEAP_PT;
+    heapPt[reservedPageIdx] =  (uint64_t*)(((uint64_t)(heapPt[reservedPageIdx])) | 3);
+    os_printf("heapPt is filled\n");
 
     return MM_HEAP_MM_FOR_IDX(reservedPageIdx);
 }

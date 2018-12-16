@@ -5,7 +5,7 @@
 #define CSL_COMMAND_DUMP_TRAPFRAME "dmptrapframe"
 #define CSL_COMMAND_DUMP_TIMER "timer"
 #define CSL_COMMAND_DIVISION_BY_ZERO "divbyzero"
-#define CSL_COMMAND_HEAP_SCENARIO_1 "heap_1"
+#define CSL_COMMAND_HEAP_SCENARIO_1 "heap1"
 
 void CslInterpretCmd(char* Command);
 

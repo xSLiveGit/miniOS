@@ -1,7 +1,7 @@
 #include "osrt.h"
 #include "os_string.h"
 #include "os_console.h"
-
+#include "os_memory.h"
 
 //trus means success
 bool InitEnviroment()
@@ -10,6 +10,7 @@ bool InitEnviroment()
     ScrClearScreen();
     
     IntInitializeIdt(&(gEnviroment.Idt), &(gEnviroment.IdtDescriptr));
+    MmInit();
 
     return true;
 }

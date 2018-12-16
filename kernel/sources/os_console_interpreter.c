@@ -40,19 +40,26 @@ void _HandleHeapScenario1()
 {
     char heapMsg[] = "Am scris ceva in heap";
     void* mmPage = MmAllocPage();
+    os_printf("Am primit un pointer\n");
     if(NULL == mmPage)
     {
         os_printf("MmAllocPage returned nullptr");
         return;
     }
 
-    for(int i=0; i< sizeof(heapMsg); i++)
+    os_printf("Allocated page: { %x }", mmPage);
+    __debugbreak();
+    __debugbreak();
+    
+    for(int i=0; i< 2; i++)
     {
         ((char*)mmPage)[i] = heapMsg[i];
     }
 
-    os_printf("Allocated page: { %x }, Content: { %s }", mmPage, (char*)mmPage);
+    os_printf("Allocated page: { %x }", mmPage);
+    os_printf("o SA CURAT");
     MmFreePage(mmPage);
+    os_printf("Am curatat");
 }
 
 void CslInterpretCmd(char* Command)
