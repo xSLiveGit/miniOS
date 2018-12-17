@@ -33,6 +33,14 @@ typedef unsigned int        bool;
 #define UINT8_MAX ((uint8_t)(-1))
 #endif
 
+#ifndef UINT16_MAX
+#define UINT16_MAX ((uint16_t)(-1))
+#endif
+
+#ifndef UINT64_MAX
+#define UINT64_MAX ((uint64_t)(-1))
+#endif
+
 #ifndef VOID
 #define VOID void
 #endif //!VOID

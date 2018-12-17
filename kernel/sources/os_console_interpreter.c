@@ -13,12 +13,13 @@ void _HandlePrintHelpCmd()
     os_printf("\t %s - Use timer to sleep 3 seconds\n", CSL_COMMAND_DUMP_TIMER);
     os_printf("\t %s - Divide by zero: \n", CSL_COMMAND_DIVISION_BY_ZERO);
     os_printf("\t %s - Heap scenario 1: \n", CSL_COMMAND_HEAP_SCENARIO_1);
+    os_printf("\t %s - Heap scenario 2: \n", CSL_COMMAND_HEAP_SCENARIO_2);
 }
 
 void _HandleTimeoutCmd()
 {
-    os_printf("I will wait for 3 secounds\n");
-    TimerSleep(3000000);
+    os_printf("I will wait for 10 secounds\n");
+    TimerSleep(10000);
     os_printf("Timeout :)\n");
 }
 
@@ -40,30 +41,57 @@ void _HandleHeapScenario1()
 {
     char heapMsg[] = "Am scris ceva in heap";
     void* mmPage = MmAllocPage();
-    os_printf("Am primit un pointer\n");
+
     if(NULL == mmPage)
     {
         os_printf("MmAllocPage returned nullptr");
         return;
     }
 
-    os_printf("Allocated page: { %x }", mmPage);
-    __debugbreak();
-    os_printf("Content is : {%d}", *((int*)mmPage));
-    __debugbreak();
-    __debugbreak();
-    *((int*)mmPage) = 1;
-
     for(int i=0; i< sizeof(heapMsg); i++)
     {
         ((char*)mmPage)[i] = heapMsg[i];
     }
-    os_printf("Mm char is: {%s}", (char*)mmPage);
-    os_printf("Allocated page: { %x }", mmPage);
-    os_printf("o SA CURAT");
+    os_printf("Mm:{%x}. Content: {%s}\n", mmPage, mmPage);
+
     MmFreePage(mmPage);
-    os_printf("Am curatat");
 }
+
+void _HandleHeapScenario2(void)
+{
+    void* heaps[64] = { 0 };
+    int mod=1;
+    for(int i=0; i<64; i++)
+    {
+        heaps[i]  = MmAllocPage(); 
+        
+        os_printf("[%x]", heaps[i]);
+        if(mod % 4 == 0)
+        {
+            os_printf("\n");            
+        }
+
+        mod = (mod+1) % 4;
+    }
+
+    __debugbreak();
+    void* shouldBeNull = MmAllocPage();
+    os_printf("65th allocation is: [%x]", shouldBeNull);
+    
+    MmFreePage(heaps[63]);
+    heaps[63] = NULL;
+
+    void* shouldntBeNull = MmAllocPage();
+    os_printf("66th allocation is: [%x]", shouldntBeNull);
+    
+    MmFreePage(shouldntBeNull);
+    for(int i=0; i<63; i++)
+    {
+        MmFreePage(heaps[i]);
+        heaps[i] = NULL;
+    }
+}
+
 
 void CslInterpretCmd(char* Command)
 {
@@ -86,6 +114,10 @@ void CslInterpretCmd(char* Command)
     else if(0 == os_strcmp(Command, CSL_COMMAND_HEAP_SCENARIO_1))
     {
         _HandleHeapScenario1();
+    }
+    else if(0 == os_strcmp(Command, CSL_COMMAND_HEAP_SCENARIO_2))
+    {
+        _HandleHeapScenario2();
     }
     else
     {

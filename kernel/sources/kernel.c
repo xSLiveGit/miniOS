@@ -45,6 +45,7 @@ int main(void)
     // __debugbreak();
     
     // os_printf("I will hlt :D \n");
+    os_printf("sizoe uint64_t: %d", sizeof(uint64_t));
 
     CslInit(&(gEnviroment.Console));
     while(true)

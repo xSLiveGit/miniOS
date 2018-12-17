@@ -22,12 +22,8 @@ void TimerInit(void)
 
 void IsrTimer(void)
 {
-    __cli();
-
     __interlock_increment_uint32t(&gTickCount);
     __outb(PIC_MASTER_CTRL, PIC_EOI);
-
-    __sti();
 }
 
 uint32_t TimerGetTickCount(void)
@@ -37,28 +33,6 @@ uint32_t TimerGetTickCount(void)
 
 void TimerSleep(uint32_t Milliseconds)
 {
-    os_printf("TimerSleep milisec: {%x} \n", Milliseconds);
-    volatile uint32_t intialTimerTickCount = 0;
-    volatile uint32_t currentTickCout = 0; 
-    volatile uint32_t dif = 0;
-    
-    intialTimerTickCount = TimerGetTickCount();
-    currentTickCout = TimerGetTickCount();
-    dif = (currentTickCout - intialTimerTickCount);
-
-    while(true)
-    {
-        currentTickCout = TimerGetTickCount();
-        dif = (currentTickCout - intialTimerTickCount); 
-        if(dif > Milliseconds)
-        {
-            os_printf(
-                "init tck: {%x}, current tck: {%x} dif: {%x}\n", 
-                intialTimerTickCount, 
-                currentTickCout,
-                dif
-            );
-            break;
-        }
-    }
+    uint32_t intialTimerTickCount = TimerGetTickCount();
+    while(TimerGetTickCount() - intialTimerTickCount < Milliseconds);
 }

@@ -14,7 +14,7 @@
 
 void MmInit(void);
 void MmUninit(void);
-uint8_t MmReservePage(void);
+uint16_t MmReservePage(void);
 void MmFreeReservedPage(uint8_t PageIdx);
 
 void* MmAllocPage(void);
