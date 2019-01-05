@@ -3,6 +3,7 @@
 #include "trapframe.h"
 #include "os_string.h"
 #include "os_timer.h"
+#include "pio_mode_ata.h"
 #include "os_memory.h"
 
 void _HandlePrintHelpCmd()
@@ -12,6 +13,8 @@ void _HandlePrintHelpCmd()
     os_printf("\t %s - Dump trapframe with current ctx\n", CSL_COMMAND_DUMP_TRAPFRAME);
     os_printf("\t %s - Use timer to sleep 3 seconds\n", CSL_COMMAND_DUMP_TIMER);
     os_printf("\t %s - Divide by zero: \n", CSL_COMMAND_DIVISION_BY_ZERO);
+    os_printf("\t %s - Write content in last sector: \n", CSL_COMMAND_DISK_WRITE_LAST_SECTOR);
+    os_printf("\t %s - Read content from last sector: \n", CSL_COMMAND_DISK_READ_LAST_SECTOR);
     os_printf("\t %s - Heap scenario 1: \n", CSL_COMMAND_HEAP_SCENARIO_1);
     os_printf("\t %s - Heap scenario 2: \n", CSL_COMMAND_HEAP_SCENARIO_2);
 }
@@ -35,6 +38,33 @@ void _HandleDivisionByZero()
 
     int result = zero / zero;
     os_printf("No result: %d", result);//due compiler
+}
+
+#define SECTOR_CONTENT "Acesta este ultimul sector.\n Am scris ceva in ultimul sector\n. Aceasta este ultima fraza din acest sector\n"
+
+void _HandleWriteLastSector()
+{
+    uint8_t head = 15;
+    uint8_t sector = 32;
+    uint16_t cylinder = 127;
+    char sectorContent[512] = { 0 };
+
+    os_memcpy(sectorContent, SECTOR_CONTENT, sizeof(SECTOR_CONTENT));
+    
+    DskWrite(head, cylinder, sector, (uint8_t*)sectorContent);
+    // os_printf("I will read from disk \n");
+    // DskRead(head, cylinder, sector, inBuffer);   
+}
+
+void _HandleReadLastSector()
+{
+    uint8_t head = 15;
+    uint8_t sector = 32;
+    uint16_t cylinder = 127;
+    char sectorContent[512] = { 0 };
+
+    DskRead(head, cylinder, sector, (uint8_t*)sectorContent);   
+    os_printf("%s", sectorContent);
 }
 
 void _HandleHeapScenario1()
@@ -110,6 +140,14 @@ void CslInterpretCmd(char* Command)
     else if(0 == os_strcmp(Command, CSL_COMMAND_DIVISION_BY_ZERO))
     {
         _HandleDivisionByZero();
+    }
+    else if(0 == os_strcmp(Command, CSL_COMMAND_DISK_READ_LAST_SECTOR))
+    {
+        _HandleReadLastSector();
+    }
+    else if(0 == os_strcmp(Command, CSL_COMMAND_DISK_WRITE_LAST_SECTOR))
+    {
+        _HandleWriteLastSector();
     }
     else if(0 == os_strcmp(Command, CSL_COMMAND_HEAP_SCENARIO_1))
     {
