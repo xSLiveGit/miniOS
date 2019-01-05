@@ -50,6 +50,11 @@ uint16_t MmReservePage(void)
         if((g_MemoryAvailable & ((uint64_t)1 << i)) == 0)
         {
             g_MemoryAvailable = (g_MemoryAvailable | (((uint64_t)1) << i));
+
+            uint64_t** heapPt = (uint64_t**)HEAP_PT;
+            heapPt[i] =  (uint64_t*)(((uint64_t)(heapPt[i])) | 1);
+            __invlpg(heapPt[i]);
+
             return i;
         }
     }
@@ -82,10 +87,6 @@ void* MmAllocPage(void)
     {
         return NULL;
     }
-
-    uint64_t** heapPt = (uint64_t**)HEAP_PT;
-    heapPt[reservedPageIdx] =  (uint64_t*)(((uint64_t)(heapPt[reservedPageIdx])) | 1);
-    __invlpg(heapPt[reservedPageIdx]);
     
     return MM_HEAP_MM_FOR_IDX(reservedPageIdx);
 }
@@ -97,12 +98,6 @@ void MmFreePage(void* Addr)
         os_printf("[ERR] adresa nu e multiplu de pagina");
         return;
     }
-
-    // if((uint64_t)HEAP_BASE_ADDRESS < (uint64_t)Addr)
-    // {
-    //     os_printf("[ERR] Adresa nu e buna pt ca e prea mica");
-    //     return;
-    // }
 
     uint64_t idx = ((uint8_t*)Addr - (uint8_t*)HEAP_BASE_ADDRESS) / PAGE_SIZE;
 

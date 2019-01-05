@@ -6,6 +6,8 @@
 #include "pio_mode_ata.h"
 #include "os_memory.h"
 
+#define SECTOR_CONTENT "Acesta este ultimul sector.\n Am scris ceva in ultimul sector\n. Aceasta este ultima fraza din acest sector\n"
+
 void _HandlePrintHelpCmd()
 {
     os_printf("Help:\n");
@@ -17,6 +19,7 @@ void _HandlePrintHelpCmd()
     os_printf("\t %s - Read content from last sector: \n", CSL_COMMAND_DISK_READ_LAST_SECTOR);
     os_printf("\t %s - Heap scenario 1: \n", CSL_COMMAND_HEAP_SCENARIO_1);
     os_printf("\t %s - Heap scenario 2: \n", CSL_COMMAND_HEAP_SCENARIO_2);
+    os_printf("\t %s - Heap scenario 3: \n", CSL_COMMAND_HEAP_SCENARIO_3);
 }
 
 void _HandleTimeoutCmd()
@@ -40,7 +43,6 @@ void _HandleDivisionByZero()
     os_printf("No result: %d", result);//due compiler
 }
 
-#define SECTOR_CONTENT "Acesta este ultimul sector.\n Am scris ceva in ultimul sector\n. Aceasta este ultima fraza din acest sector\n"
 
 void _HandleWriteLastSector()
 {
@@ -52,8 +54,6 @@ void _HandleWriteLastSector()
     os_memcpy(sectorContent, SECTOR_CONTENT, sizeof(SECTOR_CONTENT));
     
     DskWrite(head, cylinder, sector, (uint8_t*)sectorContent);
-    // os_printf("I will read from disk \n");
-    // DskRead(head, cylinder, sector, inBuffer);   
 }
 
 void _HandleReadLastSector()
@@ -104,7 +104,6 @@ void _HandleHeapScenario2(void)
         mod = (mod+1) % 4;
     }
 
-    __debugbreak();
     void* shouldBeNull = MmAllocPage();
     os_printf("65th allocation is: [%x]", shouldBeNull);
     
@@ -119,6 +118,28 @@ void _HandleHeapScenario2(void)
     {
         MmFreePage(heaps[i]);
         heaps[i] = NULL;
+    }
+}
+
+void _HandleHeapScenario3(void)
+{
+    void* heaps[5] = { 0 };
+    for(int i=0; i<3; i++)
+    {
+        for(int heapI = 0; heapI < 5; heapI++)
+        {
+            heaps[heapI] = MmAllocPage();
+            os_memcpy(heaps[heapI], "ana are mere", sizeof("ana are mere"));
+            os_printf("[%d]:[%x] ", heapI, heaps[heapI]);
+        }
+
+        os_printf("\n");
+        
+        for(int heapI = 0; heapI < 5; heapI++)
+        {
+            MmFreePage(heaps[heapI]);
+            heaps[heapI] = NULL;
+        }
     }
 }
 
@@ -156,6 +177,10 @@ void CslInterpretCmd(char* Command)
     else if(0 == os_strcmp(Command, CSL_COMMAND_HEAP_SCENARIO_2))
     {
         _HandleHeapScenario2();
+    }
+    else if(0 == os_strcmp(Command, CSL_COMMAND_HEAP_SCENARIO_3))
+    {
+        _HandleHeapScenario3();
     }
     else
     {
