@@ -103,7 +103,11 @@ GLOBAL _IntAsmIsrBasic
 extern IsrBasic
 ; void _IntAsmIsrBasic(void)
 _IntAsmIsrBasic:
+    PUSH_A
+    cli
 	call IsrBasic
+    POP_A
+    sti
 	iretq 
 
 
@@ -111,15 +115,23 @@ GLOBAL _IntAsmIsrCritical
 extern IsrCritical;
 ; void _IntAsmIsrCritical(void)
 _IntAsmIsrCritical:
+    PUSH_A
+    cli
 	call IsrCritical
-	iretq
+    sti
+    POP_A
+    iretq
 
 
 GLOBAL _IntAsmIsrKeyboard
 extern IsrKeyboard
 ; void _IntAsmIsrKeyboard(void)
 _IntAsmIsrKeyboard:
+    PUSH_A
+    cli
 	call IsrKeyboard
+    sti
+    POP_A
 	iretq
 
 
@@ -127,5 +139,9 @@ GLOBAL _IntAsmIsrTimer
 extern IsrTimer;
 ; void _IntAsmIsrTimer(void)
 _IntAsmIsrTimer:
+    PUSH_A
+    cli
 	call IsrTimer
+    sti
+    POP_A
 	iretq
