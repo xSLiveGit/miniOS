@@ -41,6 +41,9 @@ void IntRemapPic(void)
     //; 5-7	0	Reserved, must be 0
     __outb(PIC_MASTER_DATA, 1); // bit 0 enables 80x86 mode
     __outb(PIC_SLAVE_DATA, 1); // bit 0 enables 80x86 mode
+
+    __outb(PIC_MASTER_DATA, 0xFC);
+    __outb(PIC_SLAVE_DATA, 0xFF);
 }
 
 

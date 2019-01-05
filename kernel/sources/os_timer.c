@@ -4,18 +4,21 @@
 #include "types.h"
 #include "osrt.h"
 
-static volatile uint32_t gTickCount;
+static uint32_t gTickCount = 0;
 
 void TimerInit(void)
 {
     uint32_t desiredFreq = 100;
     uint32_t timerBaseFreq = 1193180;  //Magic value from https://wiki.osdev.org/Programmable_Interval_Timer :) 
-    uint16_t divisor = timerBaseFreq / desiredFreq;
 
+    __outb(TIMER_COMMAND_PORT, 0x36); //SQUARE-WAVE mode | 16 bit counter | lobyte and hibyte
+
+    uint32_t divisor = timerBaseFreq / desiredFreq;
     uint8_t lowByte = ((uint8_t*)(&divisor))[0];
     uint8_t highByte = ((uint8_t*)(&divisor))[1];
 
-    __outb(TIMER_COMMAND_PORT, 0x36); //SQUARE-WAVE mode | 16 bit counter | lobyte and hibyte
+    os_printf("Timer init: divisor: %d low byte is: %d high byte is: %d\n", divisor, lowByte, highByte);
+
     __outb(TIMER_CHANNEL0_PORT, lowByte);
     __outb(TIMER_CHANNEL0_PORT, highByte);
 }
@@ -33,6 +36,24 @@ uint32_t TimerGetTickCount(void)
 
 void TimerSleep(uint32_t Milliseconds)
 {
+
     uint32_t intialTimerTickCount = TimerGetTickCount();
-    while(TimerGetTickCount() - intialTimerTickCount < Milliseconds);
+    uint32_t actualTick = 0;
+
+    while(true)
+    {
+        actualTick = TimerGetTickCount();
+        if(actualTick != intialTimerTickCount &&  actualTick - intialTimerTickCount >= (uint64_t)Milliseconds)
+        {
+            os_printf("dif: %x milic: %x\n", actualTick - intialTimerTickCount, Milliseconds);
+            break;
+        }
+    }
+
+    os_printf(
+        "Initial: %x actual: %x Miliseconds: %x"
+        , intialTimerTickCount
+        , actualTick
+        , Milliseconds
+    );
 }

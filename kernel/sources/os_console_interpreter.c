@@ -18,8 +18,8 @@ void _HandlePrintHelpCmd()
 
 void _HandleTimeoutCmd()
 {
-    os_printf("I will wait for 10 secounds\n");
-    TimerSleep(10000);
+    os_printf("I will wait for 3 secounds\n");
+    TimerSleep(3000);
     os_printf("Timeout :)\n");
 }
 
