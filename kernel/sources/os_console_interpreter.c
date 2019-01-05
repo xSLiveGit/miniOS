@@ -124,18 +124,27 @@ void _HandleHeapScenario2(void)
 void _HandleHeapScenario3(void)
 {
     void* heaps[5] = { 0 };
+    char string[] = "char: a";
+    int heapCounter = 4;
+
     for(int i=0; i<3; i++)
     {
-        for(int heapI = 0; heapI < 5; heapI++)
+        for(int heapI = 0; heapI < heapCounter; heapI++)
         {
             heaps[heapI] = MmAllocPage();
-            os_memcpy(heaps[heapI], "ana are mere", sizeof("ana are mere"));
-            os_printf("[%d]:[%x] ", heapI, heaps[heapI]);
+            string[6] = 'a' + (i * heapCounter + heapI);
+            os_memcpy(heaps[heapI], string, os_strlen(string) + 1);
+            os_printf("[%d]:[%x]:[%s] ", heapI, heaps[heapI], heaps[heapI]);
+
+            if(heapI % 2 == 1)
+            {
+                os_printf("\n");
+            }
         }
 
         os_printf("\n");
         
-        for(int heapI = 0; heapI < 5; heapI++)
+        for(int heapI = 0; heapI < heapCounter; heapI++)
         {
             MmFreePage(heaps[heapI]);
             heaps[heapI] = NULL;
@@ -146,6 +155,7 @@ void _HandleHeapScenario3(void)
 
 void CslInterpretCmd(char* Command)
 {
+    os_printf("\n");
     if(0 == os_strcmp(Command, CSL_COMMAND_HELP))
     {
         _HandlePrintHelpCmd();
